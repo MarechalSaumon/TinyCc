@@ -4,10 +4,8 @@
 
 #ifndef ASTASSIGNMENT_H
 #define ASTASSIGNMENT_H
-#include <map>
 #include <memory>
 #include <string>
-#include <unordered_map>
 
 #include "Ast.h"
 
@@ -20,6 +18,9 @@ public:
     std::string Compile(ContextMap &offsets) override;
     std::string Dump() override;
     std::unique_ptr<Ast> Optimize() override;
+
+    VariableType UnderlyingType() override;
+
 
 private:
     std::string m_left{};

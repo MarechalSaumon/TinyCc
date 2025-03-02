@@ -21,6 +21,7 @@ public:
     {}
     std::string Compile(ContextMap &offsets) override;
     std::string Dump() override;
+    VariableType UnderlyingType() override;
 
 private:
     std::string name;

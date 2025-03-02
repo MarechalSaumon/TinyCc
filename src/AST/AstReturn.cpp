@@ -29,3 +29,8 @@ std::unique_ptr<Ast> AstReturn::Optimize()
 {
     return Ast::Optimize();
 }
+
+VariableType AstReturn::UnderlyingType()
+{
+    return m_expression->UnderlyingType();
+}

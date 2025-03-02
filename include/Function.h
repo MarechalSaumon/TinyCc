@@ -7,11 +7,8 @@
 #include <AST/Ast.h>
 #include <AST/AstBlock.h>
 #include <AST/AstLiteral.h>
-#include <Variable.h>
+#include <Variables/Variable.h>
 #include <map>
-
-static const std::vector<std::string> args_reg = { "%rdi", "%rsi", "%rdx",
-                                                   "%rcx", "%r8",  "%r9" };
 
 class Function
 {
@@ -20,7 +17,7 @@ public:
     Call(std::unordered_map<std::string, std::unique_ptr<AstLiteral>> context);
 
     explicit Function(std::string name, const std::vector<std::string> &args,
-                      ContextMap context, bool isStatic = false);
+                      ContextMap context, bool isStatic = false, VariableType returnType = INTEGER);
 
     [[nodiscard]] std::string Compile();
     std::string Dump();
@@ -46,12 +43,18 @@ public:
         return m_isStatic;
     }
 
+    VariableType GetReturnType() const
+    {
+        return m_returnType;
+    }
+
 private:
     std::string m_name;
     std::unique_ptr<Ast> m_body;
     std::vector<std::string> m_args;
     bool m_isStatic;
     ContextMap m_context;
+    VariableType m_returnType;
 };
 
 #endif // ASTFUNCTION_H

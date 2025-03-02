@@ -4,10 +4,10 @@
 
 #ifndef AST_H
 #define AST_H
+#include <Enum.h>
 #include <map>
 #include <memory>
 #include <string>
-#include <unordered_map>
 
 class Variable;
 
@@ -26,10 +26,16 @@ class Ast
 {
 public:
     virtual ~Ast() = default;
-    inline virtual ValueType Type()
+    inline virtual ValueType GetValueType()
     {
         return Lvalue;
     }
+
+    virtual VariableType UnderlyingType()
+    {
+        return NONE;
+    }
+
     // virtual ~Ast() = default;
     virtual long Evaluate() = 0;
     virtual std::string Dump() = 0;

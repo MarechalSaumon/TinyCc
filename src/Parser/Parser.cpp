@@ -15,7 +15,7 @@
 #include <Function.h>
 #include <Parser/Parser.h>
 #include <Program.h>
-#include <Variable.h>
+#include <Variables/Variable.h>
 #include <complex>
 #include <iostream>
 #include <map>
@@ -184,18 +184,15 @@ std::unique_ptr<Ast> Parser::Assignment()
             Eat(type);
         }
         std::string id = CurrentToken().Data;
-        for (auto it = m_context->begin(); it != m_context->end(); ++it)
-        {
-            std::cout << "dUIMP ME " << it->first << "\n";
-        }
-        if (m_context->find(id) == m_context->end())
+
+        if (!m_context->contains(id))
         {
             if (type == TOKEN_NONE) // no type given
             {
                 throw std::runtime_error("Undefined type for : '" + id + "'");
             }
-            (*m_context)[id] = (std::make_shared<Variable>(
-                m_offset++, type == TOKEN_STRING ? STRING : INTEGER, id));
+
+            (*m_context)[id] = make_variable(m_offset++, id, type == TOKEN_STRING ? STRING : INTEGER);
         }
 
         Eat(TOKEN_IDENTIFIER);
@@ -310,10 +307,14 @@ std::shared_ptr<Function> Parser::ParseFunction()
         Eat(CurrentToken().Type);
         TokenType type = CurrentToken().Type;
         std::string name = Eat(TOKEN_IDENTIFIER);
+
+
         m_context->insert(std::make_pair(
             name,
-            std::make_shared<Variable>(
-                m_offset++, type == TOKEN_STRING ? STRING : INTEGER, name)));
+            make_variable(
+                m_offset++, name, type == TOKEN_STRING ? STRING : INTEGER)));
+
+
         std::cout << "Insert " << name << " into function " << id << std::endl;
         params.push_back(name);
     }
@@ -335,7 +336,7 @@ std::unique_ptr<Program> Parser::Parse()
     while (CurrentToken().Type != TOKEN_EOF)
     {
         funcs[CurrentToken().Data] =
-            ParseFunction(); // For now we only have functions
+            ParseFunction(); // For now, we only have functions
     }
 
     return std::make_unique<Program>(std::move(funcs));
@@ -352,7 +353,6 @@ std::unordered_map<std::string, int> Parser::GetOffsets()
     int offset = 1;
     for (const auto &s : *m_context)
     {
-        std::cout << s.first << " offsrt is " << offset * 8 << std::endl;
         res[s.first] = offset * 8;
         offset++;
     }

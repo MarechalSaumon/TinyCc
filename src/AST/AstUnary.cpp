@@ -47,3 +47,8 @@ std::string AstUnary::Dump()
 {
     return Token::opToString(m_operation) + " " + m_operand->Dump();
 }
+
+VariableType AstUnary::UnderlyingType()
+{
+    return m_operand->UnderlyingType();
+}

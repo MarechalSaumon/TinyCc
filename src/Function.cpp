@@ -15,16 +15,19 @@ long Function::Call(
 }
 
 Function::Function(std::string name, const std::vector<std::string> &args,
-                   ContextMap context, bool isStatic)
+                   ContextMap context, bool isStatic, VariableType returnType)
     : m_name(std::move(name))
     , m_args(args)
     , m_isStatic(isStatic)
     , m_context(std::move(context))
+    , m_returnType(returnType)
 {}
 
 // Args not in offset
 std::string Function::Compile()
 {
+    static const std::vector<std::string> args_reg = { "%rdi", "%rsi", "%rdx",
+                                                   "%rcx", "%r8",  "%r9" };
     auto offsets = std::unordered_map<std::string, int>();
     int offset = 1;
     for (const auto &s : *m_context)

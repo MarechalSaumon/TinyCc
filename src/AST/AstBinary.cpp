@@ -112,7 +112,7 @@ std::string AstBinary::Compile(ContextMap &offsets)
 
     // Here, if right is a literal, lets not waste time
     std::string leftVal;
-    if (m_right->Type() == Literal && op != TOKEN_DIV)
+    if (m_right->GetValueType() == Literal && op != TOKEN_DIV)
     {
         leftVal = "$" + std::to_string(m_right->Evaluate());
     }
@@ -185,4 +185,14 @@ std::unique_ptr<Ast> AstBinary::Optimize()
 std::string AstBinary::Dump()
 {
     return m_left->Dump() + " " + Token::opToString(op) + " " + m_right->Dump();
+}
+
+
+VariableType AstBinary::UnderlyingType()
+{
+    if (m_left->UnderlyingType() == STRING || m_right->UnderlyingType() == STRING)
+    {
+        return VariableType::STRING;
+    }
+    return INTEGER;
 }

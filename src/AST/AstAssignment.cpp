@@ -5,7 +5,7 @@
 #include <AST/AstAssignment.h>
 #include <AST/AstLiteral.h>
 #include <Utils.h>
-#include <Variable.h>
+#include <Variables/Variable.h>
 #include <iostream>
 #include <memory>
 #include <ostream>
@@ -29,17 +29,18 @@ AstAssignment::AstAssignment(const std::string &left,
 
 std::string AstAssignment::Compile(ContextMap &offsets)
 {
-    int index = (*offsets)[m_left]->GetOffset();
-    ;
+    //int index = (*offsets)[m_left]->GetOffset();
 
-    if (m_right->Type() == Literal) // literal
+    const std::string& asmName = (*offsets)[m_left]->GetAssemblyAlias();
+
+    if (m_right->GetValueType() == Literal) // literal
     {
         const std::string val = "$" + std::to_string(m_right->Evaluate());
-        return Utils::MoveLiteralToStack(val, index);
+        return Utils::MoveLiteralToStack(val, asmName);
     }
 
     std::string res = m_right->Compile(offsets);
-    return res + Utils::MoveFromRax(index);
+    return res + Utils::MoveFromRax(asmName);
 }
 
 std::string AstAssignment::Dump()
@@ -57,4 +58,8 @@ std::unique_ptr<Ast> AstAssignment::Optimize()
         m_right = std::move(right);
     }
     return nullptr;
+}
+
+VariableType AstAssignment::UnderlyingType(){
+    return m_right->UnderlyingType();
 }

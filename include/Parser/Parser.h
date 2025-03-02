@@ -8,7 +8,7 @@
 #include <Function.h>
 #include <Lexer/Lexer.h>
 #include <Program.h>
-#include <Variable.h>
+#include <Variables/Variable.h>
 #include <map>
 
 class Parser

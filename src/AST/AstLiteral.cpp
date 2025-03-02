@@ -6,6 +6,11 @@
 
 #include "Utils.h"
 
+ValueType AstLiteral::GetValueType()
+{
+    return Literal;
+}
+
 long AstLiteral::Evaluate()
 {
     return value;
@@ -24,4 +29,9 @@ std::unique_ptr<Ast> AstLiteral::Optimize()
 std::string AstLiteral::Dump()
 {
     return std::to_string(value);
+}
+
+VariableType AstLiteral::UnderlyingType()
+{
+    return INTEGER;
 }

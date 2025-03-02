@@ -18,6 +18,7 @@ public:
     std::unique_ptr<Ast> Optimize() override;
     std::string Dump() override;
 
+
 private:
     std::vector<std::unique_ptr<Ast>> m_statements;
 };

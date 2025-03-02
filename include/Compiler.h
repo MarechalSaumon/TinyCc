@@ -4,11 +4,9 @@
 
 #ifndef COMPILER_H
 #define COMPILER_H
-#include <AST/Ast.h>
 #include <Program.h>
 #include <memory>
 #include <string>
-#include <unordered_map>
 
 class Compiler
 {

@@ -21,6 +21,9 @@ AstFunctionCall::AstFunctionCall(const std::shared_ptr<Function> &function,
 
 std::string AstFunctionCall::Compile(ContextMap &offsets)
 {
+    static const std::vector<std::string> args_reg = { "%rdi", "%rsi", "%rdx",
+                                                       "%rcx", "%r8",  "%r9" };
+
     std::string res;
     // compute args and move into registers
     for (size_t i = 0; i < m_args.size(); i++)
@@ -41,4 +44,9 @@ std::string AstFunctionCall::Dump()
 std::unique_ptr<Ast> AstFunctionCall::Optimize()
 {
     return Ast::Optimize();
+}
+
+VariableType AstFunctionCall::UnderlyingType()
+{
+    return m_function->GetReturnType();
 }

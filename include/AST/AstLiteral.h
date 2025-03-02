@@ -12,15 +12,14 @@ public:
     explicit AstLiteral(long value)
         : value(value)
     {}
-    ValueType Type() override
-    {
-        return Literal;
-    }
+
+    ValueType GetValueType() override;
 
     long Evaluate() override;
     std::string Compile(ContextMap &offsets) override;
     std::unique_ptr<Ast> Optimize() override;
     std::string Dump() override;
+    VariableType UnderlyingType() override;
 
 private:
     long value;

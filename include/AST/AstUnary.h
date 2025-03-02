@@ -18,6 +18,7 @@ public:
     std::string Compile(ContextMap &offsets) override;
     std::unique_ptr<Ast> Optimize() override;
     std::string Dump() override;
+    VariableType UnderlyingType() override;
 
 private:
     std::unique_ptr<Ast> m_operand;

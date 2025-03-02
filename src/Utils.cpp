@@ -55,10 +55,23 @@ std::string Utils::MoveToRax(int offset)
         + "), %rax\n";
 }
 
+std::string Utils::MoveToRax(const std::string &lhs)
+{
+    return std::string("mov ") + lhs + ", %rax\n";
+}
+
+
+
 std::string Utils::MoveFromRax(int offset)
 {
     return std::string("mov %rax, ") + std::to_string(-offset) + "("
         + StackPtr() + ")\n";
+}
+
+
+std::string Utils::MoveFromRax(const std::string &rhs)
+{
+    return std::string("mov %rax, ") + rhs + "\n";
 }
 
 std::string Utils::MoveLiteralToStack(const std::string &literal, int offset)
@@ -66,6 +79,12 @@ std::string Utils::MoveLiteralToStack(const std::string &literal, int offset)
     return std::string("movq " + literal + ", ") + std::to_string(-offset) + "("
         + StackPtr() + ")\n";
 }
+
+std::string Utils::MoveLiteralToStack(const std::string &literal, const std::string &name)
+{
+    return std::string("movq " + literal + ", ") + name + "\n";
+}
+
 
 std::string Utils::MoveLiteralToRax(long value)
 {

@@ -22,6 +22,7 @@ public:
     std::string Compile(ContextMap &offsets) override;
     std::string Dump() override;
     std::unique_ptr<Ast> Optimize() override;
+    VariableType UnderlyingType() override;
 
 private:
     std::shared_ptr<Function> m_function;

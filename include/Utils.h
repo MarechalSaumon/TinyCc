@@ -4,15 +4,17 @@
 
 #ifndef UTILS_H
 #define UTILS_H
-#include <AST/AstBlock.h>
 #include <memory>
 #include <ostream>
 #include <string>
 #include <unordered_map>
 
+
+
 class Utils
 {
 public:
+
     static std::string LogicalNot(const std::string &reg);
 
     static std::string LogicalOr(const std::string &reg1,
@@ -23,9 +25,16 @@ public:
                                               const std::string &reg2);
     static std::string MoveToRax(int offset);
 
+    static std::string MoveToRax(const std::string &lhs);
+
     static std::string MoveFromRax(int offset);
+
+    static std::string MoveFromRax(const std::string &rhs);
+
     static std::string MoveLiteralToStack(const std::string &literal,
                                           int offset);
+
+    static std::string MoveLiteralToStack(const std::string &literal, const std::string &name);
 
     static std::string MoveLiteralToRax(long value);
 

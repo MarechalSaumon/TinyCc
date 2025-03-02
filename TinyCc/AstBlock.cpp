@@ -12,7 +12,8 @@
 long AstBlock::Evaluate()
 {
     long res = 0;
-    for (const auto &s : m_statements) {
+    for (const auto &s : m_statements)
+    {
         res = s->Evaluate();
     }
     return res;
@@ -22,10 +23,11 @@ AstBlock::AstBlock(std::vector<std::unique_ptr<Ast>> statements)
     m_statements = std::move(statements);
 }
 
-std::string AstBlock::Compile(std::unordered_map<std::string, int>& offsets)
+std::string AstBlock::Compile(ContextMap &offsets)
 {
     std::string res = "";
-    for (const auto &s : m_statements) {
+    for (const auto &s : m_statements)
+    {
         res += s->Compile(offsets);
     }
     return res;
@@ -34,7 +36,7 @@ std::string AstBlock::Compile(std::unordered_map<std::string, int>& offsets)
 std::unique_ptr<Ast> AstBlock::Optimize()
 {
     long last;
-    for (int i = 0; i < m_statements.size(); i++)
+    for (size_t i = 0; i < m_statements.size(); i++)
     {
         auto cur = m_statements[i]->Optimize();
         if (cur != nullptr)
@@ -53,7 +55,8 @@ std::unique_ptr<Ast> AstBlock::Optimize()
 std::string AstBlock::Dump()
 {
     std::string res = "";
-    for (const auto & s : m_statements) {
+    for (const auto &s : m_statements)
+    {
         res += s->Dump();
         res += "\n";
     }

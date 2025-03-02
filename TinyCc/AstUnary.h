@@ -9,23 +9,19 @@
 #include "Ast.h"
 #include "Token.hpp"
 
-
-
-class AstUnary final : public Ast {
-
+class AstUnary final : public Ast
+{
 public:
     AstUnary(std::unique_ptr<Ast> operand, TokenType operation);
 
     long Evaluate() override;
-    std::string Compile(std::unordered_map<std::string, int>& offsets) override;
+    std::string Compile(ContextMap &offsets) override;
     std::unique_ptr<Ast> Optimize() override;
     std::string Dump() override;
-
 
 private:
     std::unique_ptr<Ast> m_operand;
     TokenType m_operation;
 };
 
-
-#endif //ASTUNARY_H
+#endif // ASTUNARY_H

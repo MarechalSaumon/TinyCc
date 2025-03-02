@@ -36,6 +36,16 @@ enum TokenType
     TOKEN_LEFT_BRACKET,
     TOKEN_RIGHT_BRACKET,
     TOKEN_SEMICOLON,
+    TOKEN_COMMA,
+    TOKEN_IF,
+    TOKEN_ELSE,
+    TOKEN_RETURN,
+    TOKEN_WHILE,
+    TOKEN_STATIC,
+    TOKEN_CHAR,
+    TOKEN_STRING,
+    TOKEN_STRING_TYPE,
+    TOKEN_INT_TYPE,
 };
 
 struct Token
@@ -96,9 +106,18 @@ public:
             {TOKEN_OR, "TOKEN_OR"},
             {TOKEN_SET, "TOKEN_SET"},
             {TOKEN_LEFT_BRACKET, "TOKEN_LEFT_BRACKET"},
-        {TOKEN_RIGHT_BRACKET, "TOKEN_RIGHT_BRACKET"},
-{TOKEN_SEMICOLON, "TOKEN_SEMICOLON"},
-
+            {TOKEN_RIGHT_BRACKET, "TOKEN_RIGHT_BRACKET"},
+            {TOKEN_SEMICOLON, "TOKEN_SEMICOLON"},
+            {TOKEN_COMMA, "TOKEN_COMMA"},
+            {TOKEN_IF, "TOKEN_IF"},
+            {TOKEN_ELSE, "TOKEN_ELSE"},
+            {TOKEN_RETURN, "TOKEN_RETURN"},
+            {TOKEN_WHILE, "TOKEN_WHILE"},
+            {TOKEN_STATIC, "TOKEN_STATIC"},
+            {TOKEN_CHAR, "TOKEN_CHAR"},
+            {TOKEN_STRING, "TOKEN_STRING"},
+            { TOKEN_STRING_TYPE, "TOKEN_STRING_TYPE"},
+            {TOKEN_INT_TYPE, "TOKEN_INT_TYPE"},
         };
 
         return  tokenMap.at(token);

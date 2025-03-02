@@ -6,12 +6,12 @@
 
 #include "Utils.h"
 
-
-long AstLiteral::Evaluate() {
+long AstLiteral::Evaluate()
+{
     return value;
 }
 
-std::string AstLiteral::Compile(std::unordered_map<std::string, int>& offsets)
+std::string AstLiteral::Compile([[maybe_unused]] ContextMap &offsets)
 {
     return Utils::MoveLiteralToRax(value);
 }

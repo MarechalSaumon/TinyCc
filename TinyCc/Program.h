@@ -10,18 +10,17 @@
 
 #include "Function.h"
 
-
-class Program {
+class Program
+{
 public:
     std::string Compile();
 
-    explicit Program(std::unordered_map<std::string, std::shared_ptr<Function>> functions);
+    explicit Program(
+        std::unordered_map<std::string, std::shared_ptr<Function>> functions);
     void Optimize() const;
 
 private:
     std::unordered_map<std::string, std::shared_ptr<Function>> m_functions;
 };
 
-
-
-#endif //PROGRAM_H
+#endif // PROGRAM_H

@@ -8,21 +8,24 @@
 #include "AstBlock.h"
 #include "Function.h"
 
-
-class AstFunctionCall : public Ast {
+class AstFunctionCall : public Ast
+{
 public:
     long Evaluate() override;
 
-    AstFunctionCall(const std::shared_ptr<Function> &function, const std::vector<Ast> &args);
+    AstFunctionCall(const std::shared_ptr<Function> &function,
+                    std::vector<std::unique_ptr<Ast>> &&args);
 
-    std::string Compile(std::unordered_map<std::string, int>& offsets) override;
+    // AstFunctionCall(const std::shared_ptr<Function> &function, const
+    // std::vector<std::unique_ptr<Ast>> &args);
+
+    std::string Compile(ContextMap &offsets) override;
     std::string Dump() override;
     std::unique_ptr<Ast> Optimize() override;
+
 private:
     std::shared_ptr<Function> m_function;
-    std::vector<Ast> m_args;
+    std::vector<std::unique_ptr<Ast>> m_args;
 };
 
-
-
-#endif //ASTFUNCTIONCALL_H
+#endif // ASTFUNCTIONCALL_H

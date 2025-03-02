@@ -15,11 +15,9 @@ Compiler::Compiler(const std::string &path)
     std::ifstream in(path);
     Parser parser(in);
 
-
-    m_program = parser.Parse();
+    m_program = std::move(parser.Parse());
 
     m_program->Optimize();
-
 
     /*
     offsets = parser.GetOffsets();
@@ -30,14 +28,14 @@ Compiler::Compiler(const std::string &path)
     }
     std::cout << root->Dump() << std::endl;
     std::cout << root->Evaluate() << std::endl;*/
-
 }
 
-int Compiler::GenerateExecutable(const std::string &filepath) {
+int Compiler::GenerateExecutable(const std::string &filepath)
+{
     std::string outputFile = "output";
     std::string command = "cc " + filepath + " -o " + outputFile;
 
-    return  std::system(command.c_str());
+    return std::system(command.c_str());
 }
 
 int Compiler::Compile(const std::string &out)
@@ -45,11 +43,9 @@ int Compiler::Compile(const std::string &out)
     // Do stuff
     std::ofstream outFile(out);
 
-
-
     outFile << m_program->Compile() << std::endl;
 
     outFile.close();
-    //GenerateExecutable(out);
+    // GenerateExecutable(out);
     return 1;
 }

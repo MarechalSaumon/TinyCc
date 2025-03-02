@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.30)
 project(TinyCc)
 
-set(CMAKE_CXX_STANDARD 17)
+add_compile_options(-Wall -Wextra -Werror -pedantic -Wold-style-cast)
+
+set(CMAKE_CXX_STANDARD 20)
 
 add_executable(TinyCc main.cpp
         Token.cpp
@@ -34,4 +36,12 @@ add_executable(TinyCc main.cpp
         AstFunctionCall.cpp
         AstFunctionCall.h
         Program.cpp
-        Program.h)
+        Program.h
+        AstIf.cpp
+        AstIf.h
+        AstReturn.cpp
+        AstReturn.h
+        AstWhile.cpp
+        AstWhile.h
+        Variable.cpp
+        Variable.h)

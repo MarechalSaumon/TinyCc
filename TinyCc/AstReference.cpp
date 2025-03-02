@@ -9,12 +9,13 @@ long AstReference::Evaluate()
     return 0;
 }
 
-std::string AstReference::Compile(std::unordered_map<std::string, int>& offsets)
+std::string AstReference::Compile([[maybe_unused]] ContextMap &offsets)
 {
     return "";
 }
 
-std::unique_ptr<Ast> AstReference::Optimize() {
+std::unique_ptr<Ast> AstReference::Optimize()
+{
     return Ast::Optimize();
 }
 

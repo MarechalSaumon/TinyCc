@@ -9,21 +9,32 @@
 std::string Program::Compile()
 {
     std::string res;
-    res += ".global facto\n";
-    res += ".text\n\n";
-    for (const auto& s : m_functions)
+    res += ".section .text\n";
+    for (const auto &func : m_functions)
     {
-        res += s.second->Compile();
+        if (!func.second->IsStatic())
+        {
+            res += "    .global " + func.second->GetName() + "\n";
+        }
+    }
+    res += "\n";
+    for (const auto &[_, func] : m_functions)
+    {
+        res += func->Compile();
     }
 
     return res;
 }
 
-Program::Program(std::unordered_map<std::string, std::shared_ptr<Function>> functions) : m_functions(std::move(functions)) {
-}
+Program::Program(
+    std::unordered_map<std::string, std::shared_ptr<Function>> functions)
+    : m_functions(std::move(functions))
+{}
 
-void Program::Optimize() const {
-    for (const auto & s : m_functions) {
-        s.second->Optimize();
+void Program::Optimize() const
+{
+    for (const auto &[_, func] : m_functions)
+    {
+        func->Optimize();
     }
 }

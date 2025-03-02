@@ -10,14 +10,14 @@
 #include "Function.h"
 #include "Lexer.h"
 #include "Program.h"
+#include "Variable.h"
 
-
-class Parser {
+class Parser
+{
 public:
+    explicit Parser(std::istream &input);
 
-
-
-    explicit Parser(std::istream& input);
+    std::unique_ptr<Ast> FunctionCall(const std::string &func_name);
 
     std::unique_ptr<Ast> Factor();
 
@@ -27,11 +27,23 @@ public:
 
     std::unique_ptr<Ast> Expr();
 
+    std::unique_ptr<Ast> Comparison();
+
     std::unique_ptr<Ast> And();
 
     std::unique_ptr<Ast> Or();
 
     std::unique_ptr<Ast> Assignment();
+
+    std::unique_ptr<Ast> If(const std::string &func);
+
+    std::unique_ptr<Ast> Return(const std::string &func);
+
+    std::unique_ptr<Ast> ParseWhile(const std::string &func);
+
+    std::unique_ptr<Ast> ParseBody(const std::string &func);
+
+    std::unique_ptr<Ast> Base(const std::string &func);
 
     std::shared_ptr<Function> ParseFunction();
 
@@ -46,10 +58,8 @@ private:
     Lexer m_lexer;
 
     std::unordered_map<std::string, std::shared_ptr<Function>> m_functions;
-    std::shared_ptr<std::map<std::string, std::unique_ptr<Ast>>> m_context;
-
+    ContextMap m_context;
+    int m_offset;
 };
 
-
-
-#endif //PARSER_H
+#endif // PARSER_H

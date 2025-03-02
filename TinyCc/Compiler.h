@@ -11,22 +11,20 @@
 #include "Ast.h"
 #include "Program.h"
 
-
-class Compiler {
+class Compiler
+{
 public:
-    explicit Compiler(const std::string& path);
+    explicit Compiler(const std::string &path);
 
     static int GenerateExecutable(const std::string &filepath);
 
-    int Compile(const std::string& out = "out.S");
-private:
+    int Compile(const std::string &out = "out.S");
 
-    std::unordered_map<std::string, int> offsets;
+private:
+    // std::unordered_map<std::string, int> offsets;
     std::string path;
-    std::unique_ptr<Ast> root;
+    // std::unique_ptr<Ast> root;
     std::unique_ptr<Program> m_program;
 };
 
-
-
-#endif //COMPILER_H
+#endif // COMPILER_H

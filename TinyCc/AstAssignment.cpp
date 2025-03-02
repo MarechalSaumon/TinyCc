@@ -12,31 +12,41 @@
 
 #include "AstLiteral.h"
 #include "Utils.h"
+#include "Variable.h"
 
-long AstAssignment::Evaluate() {
+long AstAssignment::Evaluate()
+{
     long val = m_right->Evaluate();
-    (*m_context)[m_left] = std::make_unique<AstLiteral>(val);
+    (*m_context)[m_left]->SetAst(std::make_unique<AstLiteral>(val));
     return val;
 }
 
-AstAssignment::AstAssignment(const std::string &left, std::unique_ptr<Ast> right,
-                             std::shared_ptr<std::map<std::string, std::unique_ptr<Ast> > > context) {
+AstAssignment::AstAssignment(const std::string &left,
+                             std::unique_ptr<Ast> right, ContextMap context)
+{
     m_context = std::move(context);
     m_left = left;
     m_right = std::move(right);
 }
 
-std::string AstAssignment::Compile(std::unordered_map<std::string, int>& offsets)
+std::string AstAssignment::Compile(ContextMap &offsets)
 {
-    std::string res = m_right->Compile(offsets);
-    int index =  offsets[m_left];
+    int index = (*offsets)[m_left]->GetOffset();
+    ;
 
+    if (m_right->Type() == Literal) // literal
+    {
+        const std::string val = "$" + std::to_string(m_right->Evaluate());
+        return Utils::MoveLiteralToStack(val, index);
+    }
+
+    std::string res = m_right->Compile(offsets);
     return res + Utils::MoveFromRax(index);
 }
 
 std::string AstAssignment::Dump()
 {
-    return  "set " + m_left + " = " + m_right->Dump();
+    return "set " + m_left + " = " + m_right->Dump();
 }
 
 std::unique_ptr<Ast> AstAssignment::Optimize()

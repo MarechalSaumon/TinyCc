@@ -4,33 +4,43 @@
 
 #include "Function.h"
 
+#include <list>
 #include <utility>
 
 #include "Utils.h"
 
-
-
-
-
-Function::Function(std::string name, std::unique_ptr<AstBlock> body, const std::vector<std::string> &args,
-    std::shared_ptr<std::map<std::string, std::unique_ptr<Ast>>> context)
-: m_name(std::move(name)), m_body(std::move(body)), m_args(args), m_context(std::move(context))
+long Function::Call(
+    std::unordered_map<std::string, std::unique_ptr<AstLiteral>> context)
 {
+    (void)context;
+    return 0;
 }
 
-// Args not in offset
-std::string Function::Compile() const
-{
+Function::Function(std::string name, const std::vector<std::string> &args,
+                   ContextMap context, bool isStatic)
+    : m_name(std::move(name))
+    , m_args(args)
+    , m_isStatic(isStatic)
+    , m_context(std::move(context))
+{}
 
+// Args not in offset
+std::string Function::Compile()
+{
     auto offsets = std::unordered_map<std::string, int>();
     int offset = 1;
-    for (const auto& s : *m_context) {
+    for (const auto &s : *m_context)
+    {
         offsets[s.first] = offset * 8;
+        s.second->SetOffset(offset * 8);
         offset++;
     }
 
-    for (const auto& arg : m_args) {
-        if (*m_context->find(arg) == *m_context->end()) {
+    // compute offsets for each argument
+    for (const auto &arg : m_args)
+    {
+        if (*m_context->find(arg) == *m_context->end())
+        {
             offsets[arg] = offset * 8;
             offset++;
         }
@@ -39,9 +49,17 @@ std::string Function::Compile() const
     std::string res;
     res += m_name + ":\n\n";
     res += Utils::BuildPrologue(offsets);
-    res += m_body->Compile(offsets);
+
+    // move args on the stack
+
+    for (size_t i = 0; i < m_args.size(); i++)
+    {
+        res += Utils::MoveRegisterToStack(args_reg[i], offsets[m_args[i]]);
+    }
+
+    res += m_body->Compile(m_context);
     res += "\n";
-    res += Utils::BuildEpilogue(offsets);
+    res += Utils::BuildEpilogue(m_name, offsets);
     return res;
 }
 
@@ -57,7 +75,8 @@ std::string Function::Dump()
 void Function::Optimize()
 {
     std::unique_ptr<Ast> cur = m_body->Optimize();
-    if (cur == nullptr) {
+    if (cur == nullptr)
+    {
         return;
     }
     m_body = std::move(cur);

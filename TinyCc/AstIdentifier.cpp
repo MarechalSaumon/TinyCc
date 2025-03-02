@@ -5,15 +5,17 @@
 #include "AstIdentifier.h"
 
 #include "Utils.h"
+#include "Variable.h"
 
-
-long AstIdentifier::Evaluate() {
-    return (*context)[name]->Evaluate();
+long AstIdentifier::Evaluate()
+{
+    return 0;
+    // return (*context)[name]->Evaluate();
 }
 
-std::string AstIdentifier::Compile(std::unordered_map<std::string, int>& offsets)
+std::string AstIdentifier::Compile(ContextMap &offsets)
 {
-    return Utils::MoveToRax(offsets[name]);
+    return Utils::MoveToRax((*offsets)[name]->GetOffset());
 }
 
 std::string AstIdentifier::Dump()

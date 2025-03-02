@@ -10,17 +10,18 @@
 
 #include "Ast.h"
 
-class AstReference final : public Ast {
+class AstReference final : public Ast
+{
 public:
     long Evaluate() override;
-    std::string Compile(std::unordered_map<std::string, int>& offsets) override;
+    std::string Compile(ContextMap &offsets) override;
     std::unique_ptr<Ast> Optimize() override;
     std::string Dump() override;
 
 private:
     std::string name;
-    std::shared_ptr<std::unordered_map<std::string, std::unique_ptr<Ast>>> context;
+    std::shared_ptr<std::unordered_map<std::string, std::unique_ptr<Ast>>>
+        context;
 };
 
-
-#endif //ASTREFERENCE_H
+#endif // ASTREFERENCE_H

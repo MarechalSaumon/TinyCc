@@ -11,21 +11,20 @@
 
 #include "Ast.h"
 
-
-class AstAssignment final : public Ast {
+class AstAssignment final : public Ast
+{
 public:
     long Evaluate() override;
-    explicit AstAssignment(const std::string& left, std::unique_ptr<Ast> right, std::shared_ptr<std::map<std::string, std::unique_ptr<Ast>>> context);
-    std::string Compile(std::unordered_map<std::string, int>& offsets) override;
+    explicit AstAssignment(const std::string &left, std::unique_ptr<Ast> right,
+                           ContextMap context);
+    std::string Compile(ContextMap &offsets) override;
     std::string Dump() override;
     std::unique_ptr<Ast> Optimize() override;
 
 private:
     std::string m_left{};
     std::unique_ptr<Ast> m_right{};
-    std::shared_ptr<std::map<std::string, std::unique_ptr<Ast>>> m_context;
-
+    ContextMap m_context;
 };
 
-
-#endif //ASTASSIGNMENT_H
+#endif // ASTASSIGNMENT_H

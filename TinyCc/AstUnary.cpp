@@ -5,26 +5,33 @@
 #include "AstUnary.h"
 
 #include "AstLiteral.h"
+#include "Utils.h"
 
+AstUnary::AstUnary(std::unique_ptr<Ast> operand, TokenType operation)
+    : m_operand(std::move(operand))
+    , m_operation(operation)
+{}
 
-AstUnary::AstUnary(std::unique_ptr<Ast> operand, TokenType operation) : m_operation(operation),
-                                                                        m_operand(std::move(operand)) {
-}
-
-long AstUnary::Evaluate() {
-    return m_operation == TOKEN_MINUS ? -m_operand->Evaluate() : m_operand->Evaluate();
-}
-
-std::string AstUnary::Compile(std::unordered_map<std::string, int>& offsets)
+long AstUnary::Evaluate()
 {
+    return m_operation == TOKEN_MINUS ? -m_operand->Evaluate()
+                                      : m_operand->Evaluate();
+}
+
+std::string AstUnary::Compile(ContextMap &offsets)
+{
+    std::string res = m_operand->Compile(offsets);
+
+    if (m_operation == TOKEN_NOT)
+    {
+        res += Utils::LogicalNot("%rax");
+    }
     if (m_operation == TOKEN_MINUS)
     {
-        std::string res = m_operand->Compile(offsets) ;
-        return "not %rax\n";
+        res += "neg %rax\n";
     }
-    return m_operand->Compile(offsets);
+    return res;
 }
-
 
 std::unique_ptr<Ast> AstUnary::Optimize()
 {

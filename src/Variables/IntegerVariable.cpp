@@ -7,3 +7,8 @@
 IntegerVariable::IntegerVariable(int offset, std::string m_name, std::unique_ptr<Ast> ref) : Variable(offset, std::move(m_name), std::move(ref))
 {
 }
+
+VariableType IntegerVariable::GetType() const
+{
+    return INTEGER;
+}

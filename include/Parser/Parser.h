@@ -52,6 +52,12 @@ public:
 
     std::unordered_map<std::string, int> GetOffsets();
 
+    std::string GetCurrentLine();
+
+    std::string GetCurrentLine() const;
+
+    int GetLineNumber() const;
+
 private:
     std::string Eat(TokenType type);
     Lexer m_lexer;

@@ -4,6 +4,7 @@
 #include <Lexer/Lexer.h>
 #include <functional>
 #include <iostream>
+#include <sstream>
 
 Lexer::Lexer(std::istream &input)
     : m_stream(input)
@@ -35,12 +36,11 @@ char Lexer::CurrentChar() const
     return static_cast<char>(tmp);
 }
 
-char Lexer::Advance() const
+char Lexer::Advance()
 {
-    int tmp = m_stream.get();
-    std::cout << "Advancing and got " << std::string{ static_cast<char>(tmp) }
-              << std::endl;
-    return static_cast<char>(tmp);
+    char tmp = static_cast<char>(m_stream.get());
+    currentLineStr += tmp;
+    return tmp;
 }
 
 void Lexer::SkipWhile(const std::function<bool(int)> &predicate) const
@@ -49,18 +49,26 @@ void Lexer::SkipWhile(const std::function<bool(int)> &predicate) const
         m_stream.get();
 }
 
-std::string Lexer::ReadWhile(const std::function<bool(int)> &predicate) const
+std::string Lexer::ReadWhile(const std::function<bool(int)> &predicate)
 {
     std::string res;
     while (predicate(m_stream.peek()))
         res += std::string{ static_cast<char>(m_stream.get()) };
+    currentLineStr += res;
     return res;
 }
 
-void Lexer::SkipWhitespaces() const
+void Lexer::SkipWhitespaces()
 {
-    SkipWhile(std::function<bool(int)>(
-        [](const char c) -> bool { return std::isspace(c); }));
+    while (std::isspace(CurrentChar()))
+    {
+        if (CurrentChar() == '\n')
+        {
+            currentLineStr = "";
+            currentLine += 1;
+        }
+        Advance();
+    }
 }
 
 void Lexer::SkipComments() const
@@ -88,7 +96,7 @@ std::unordered_map<std::string, TokenType> m_operatorTypes = {
 };
 
 std::string Lexer::GetOperator(char first, char next,
-                               const std::string &data) const
+                               const std::string &data)
 {
     for (const auto c : data)
     {
@@ -101,7 +109,7 @@ std::string Lexer::GetOperator(char first, char next,
     return std::string{ first };
 }
 
-std::string Lexer::ReadOperation() const
+std::string Lexer::ReadOperation()
 {
     const char cur = Advance();
     if (const auto it = m_operatorFollow.find(cur);
@@ -112,13 +120,25 @@ std::string Lexer::ReadOperation() const
     return std::string{ cur };
 }
 
+int Lexer::GetLineNumber() const
+{
+    return currentLine;
+}
+
+std::string Lexer::GetCurrentLine()
+{
+    ReadWhile([](char c) {return  c != '\n';});
+    return currentLineStr;
+}
+
 static bool isoperation(char c)
 {
     static const std::string s("+-*/%^&|=!");
     return s.find(c) != std::string::npos;
 }
 
-void Lexer::SetCurrentToken(TokenType type, const std::string &data = "NULL")
+
+void Lexer::SetCurrentToken(TokenType type, const std::string &data )
 {
     m_currentToken.Data = data;
     m_currentToken.Type = type;
@@ -160,7 +180,7 @@ int Lexer::ComputeNextToken()
     SkipWhitespaces();
     if (CurrentChar() == m_stream.eof())
     {
-        SetCurrentToken(TOKEN_EOF);
+        SetCurrentToken(TOKEN_EOF, "-1");
         return ReturnDebug("EOF");
     }
     char comment = CurrentChar();
@@ -210,7 +230,7 @@ int Lexer::ComputeNextToken()
     if (isSpecialChar(c))
     {
         Advance();
-        SetCurrentToken(SpecialCharacters.at(c));
+        SetCurrentToken(SpecialCharacters.at(c), std::string{c});
         return ReturnDebug("Special Character : " + c);
     }
 
@@ -223,6 +243,6 @@ int Lexer::ComputeNextToken()
         SetCurrentToken(TOKEN_STRING, str);
     }
 
-    SetCurrentToken(TOKEN_EOF);
+    SetCurrentToken(TOKEN_EOF, "-1");
     return ReturnDebug("FAILURE " + (c));
 }

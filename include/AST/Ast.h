@@ -20,7 +20,7 @@ enum ValueType
 class Ast;
 
 using ContextMap =
-    std::shared_ptr<std::map<std::string, std::shared_ptr<Variable>>>;
+    std::shared_ptr<std::map<std::string, std::unique_ptr<Variable>>>;
 
 class Ast
 {
@@ -46,6 +46,10 @@ public:
     }
 
     virtual std::string Compile(ContextMap &offsets) = 0;
+    virtual bool Returns()
+    {
+        return false;
+    }
 };
 
 #endif // AST_H

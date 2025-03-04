@@ -32,14 +32,12 @@ std::string Variable::GetAssemblyAlias() const
 
 void Variable::SetOffset(const int offset)
 {
-
     m_offset = offset;
-
 }
 
-std::shared_ptr<Variable> make_variable(int offset, std::string m_name, VariableType type)
+std::unique_ptr<Variable> make_variable(int offset, std::string m_name, VariableType type)
 {
     if (type == STRING)
-        return std::make_shared<StringVariable>(offset, m_name);
-    return std::make_shared<IntegerVariable>(offset, m_name);
+        return std::make_unique<StringVariable>(offset, m_name);
+    return std::make_unique<IntegerVariable>(offset, m_name);
 }

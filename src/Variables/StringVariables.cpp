@@ -15,7 +15,7 @@ std::shared_ptr<Variable> StringVariable::operator+(const Variable &other) const
 {
     if (other.GetType() == STRING) // concat strings
     {
-        
+
     }
     else // itoa + concat strings
     {

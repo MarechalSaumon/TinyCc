@@ -21,7 +21,11 @@ public:
 
     void SkipWhile(const std::function<bool(int)> &predicate) const;
 
+    std::string ReadWhile(const std::function<bool(int)> &predicate);
+
     std::string ReadWhile(const std::function<bool(int)> &predicate) const;
+
+    void SkipWhitespaces();
 
     void SkipWhitespaces() const;
 
@@ -29,10 +33,19 @@ public:
 
     std::string GetOperator(char first, char next, const std::string &data);
 
+    std::string ReadOperation();
+
     std::string GetOperator(char first, char next,
                             const std::string &data) const;
 
     std::string ReadOperation() const;
+
+    int GetLineNumber() const;
+
+    std::string GetCurrentLine();
+
+    std::string GetCurrentLine() const;
+
 
 private:
     // std::unordered_map<char, std::string> m_operatorFollow;
@@ -40,7 +53,7 @@ private:
 
     [[nodiscard]] char CurrentChar() const;
 
-    char Advance() const; // NOLINT(*-use-nodiscard)
+    char Advance();
 
     void SetCurrentToken(TokenType type, const std::string &data);
 
@@ -51,6 +64,8 @@ private:
     std::istream &m_stream;
 
     Token m_currentToken;
+    int currentLine = 1;
+    std::string currentLineStr;
 };
 
 #endif // LEXER_H

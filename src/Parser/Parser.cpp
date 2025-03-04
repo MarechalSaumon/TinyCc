@@ -1,7 +1,7 @@
 //
 // Created by saumonbro on 2/19/25.
 //
-
+#include <ErrorManager.h>
 #include <AST/AstAssignment.h>
 #include <AST/AstBinary.h>
 #include <AST/AstBlock.h>
@@ -20,9 +20,11 @@
 #include <iostream>
 #include <map>
 
+
+
 Parser::Parser(std::istream &input)
     : m_lexer(input)
-    , m_context(new std::map<std::string, std::shared_ptr<Variable>>())
+    , m_context(new std::map<std::string, std::unique_ptr<Variable>>())
     , m_offset(0)
 {}
 
@@ -86,7 +88,7 @@ std::unique_ptr<Ast> Parser::Factor()
         return std::make_unique<AstUnary>(Factor(), type);
     }
 
-    throw std::runtime_error("Unexpected token in factor : "
+    throw std::runtime_error("Unexpected token as factor: "
                              + Token::tokenToString(CurrentToken().Type));
 }
 
@@ -167,11 +169,14 @@ std::unique_ptr<Ast> Parser::Or()
     return res;
 }
 
+
+
 std::unique_ptr<Ast> Parser::Assignment()
 {
-    if (CurrentToken().Type == TOKEN_SET)
+    if (CurrentToken().Type == TOKEN_SET || CurrentToken().Type == TOKEN_STRING_TYPE || CurrentToken().Type == TOKEN_INT_TYPE)
     {
-        Eat(TOKEN_SET);
+        if (CurrentToken().Type == TOKEN_SET)
+            Eat(TOKEN_SET);
         TokenType type = TOKEN_NONE;
         if (CurrentToken().Type
             != TOKEN_IDENTIFIER) // must be a type (initialization)
@@ -179,7 +184,7 @@ std::unique_ptr<Ast> Parser::Assignment()
             type = CurrentToken().Type;
             if (type != TOKEN_INT_TYPE && type != TOKEN_STRING_TYPE)
             {
-                Eat(TOKEN_NONE);
+                throw std::runtime_error(GetErrorMessage(CurrentToken(), {TOKEN_STRING_TYPE, TOKEN_INT_TYPE}));
             }
             Eat(type);
         }
@@ -189,10 +194,11 @@ std::unique_ptr<Ast> Parser::Assignment()
         {
             if (type == TOKEN_NONE) // no type given
             {
-                throw std::runtime_error("Undefined type for : '" + id + "'");
+                throw std::runtime_error(GetErrorMessage(CurrentToken(), {TOKEN_STRING_TYPE, TOKEN_INT_TYPE}));
             }
 
-            (*m_context)[id] = make_variable(m_offset++, id, type == TOKEN_STRING ? STRING : INTEGER);
+
+            (*m_context)[id] = make_variable(m_offset++, id, type == TOKEN_STRING_TYPE ? STRING : INTEGER);
         }
 
         Eat(TOKEN_IDENTIFIER);
@@ -235,7 +241,7 @@ std::unique_ptr<Ast> Parser::Return(const std::string &func)
 std::unique_ptr<Ast> Parser::ParseWhile(const std::string &func)
 {
     Eat(TOKEN_WHILE);
-    std::cout << "hein" << std::endl;
+    // std::cout << "hein" << std::endl;
     Eat(TOKEN_LEFTPAR);
     auto condition = Assignment();
     Eat(TOKEN_RIGHTPAR);
@@ -283,7 +289,7 @@ std::unique_ptr<Ast> Parser::Base(const std::string &func)
 std::shared_ptr<Function> Parser::ParseFunction()
 {
     // Read args
-    std::cout << Token::tokenToString(CurrentToken().Type) << std::endl;
+    // std::cout << Token::tokenToString(CurrentToken().Type) << std::endl;
     bool isStatic = false;
     if (CurrentToken().Type == TOKEN_STATIC)
     {
@@ -291,7 +297,7 @@ std::shared_ptr<Function> Parser::ParseFunction()
         isStatic = true;
     }
     m_context =
-        std::make_shared<std::map<std::string, std::shared_ptr<Variable>>>();
+        std::make_shared<std::map<std::string, std::unique_ptr<Variable>>>();
     m_offset = 1;
 
     std::string id = Eat(TOKEN_IDENTIFIER);
@@ -302,7 +308,7 @@ std::shared_ptr<Function> Parser::ParseFunction()
         if (CurrentToken().Type != TOKEN_STRING_TYPE
             && CurrentToken().Type != TOKEN_INT_TYPE)
         {
-            Eat(TOKEN_NONE);
+            throw std::runtime_error(GetErrorMessage(CurrentToken(), {TOKEN_STRING_TYPE, TOKEN_INT_TYPE}));
         }
         Eat(CurrentToken().Type);
         TokenType type = CurrentToken().Type;
@@ -315,7 +321,7 @@ std::shared_ptr<Function> Parser::ParseFunction()
                 m_offset++, name, type == TOKEN_STRING ? STRING : INTEGER)));
 
 
-        std::cout << "Insert " << name << " into function " << id << std::endl;
+        // std::cout << "Insert " << name << " into function " << id << std::endl;
         params.push_back(name);
     }
     Eat(TOKEN_RIGHTPAR);
@@ -359,6 +365,17 @@ std::unordered_map<std::string, int> Parser::GetOffsets()
     return res;
 }
 
+std::string Parser::GetCurrentLine()
+{
+    return m_lexer.GetCurrentLine();
+}
+
+int Parser::GetLineNumber() const
+{
+    return m_lexer.GetLineNumber();
+}
+
+
 std::string Parser::Eat(const TokenType type)
 {
     TokenType curType = CurrentToken().Type;
@@ -367,7 +384,7 @@ std::string Parser::Eat(const TokenType type)
     if (curType != type)
     {
         throw std::invalid_argument(
-            "Expected type : " + Token::tokenToString(type) + " but got : "
+            "Expected: " + Token::tokenToString(type) + " but got : "
             + Token::tokenToString(curType) + " with value " + data);
     }
     return data;

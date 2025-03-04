@@ -6,14 +6,24 @@
 #include <Parser/Parser.h>
 #include <fstream>
 #include <iostream>
+#include <Logger.h>
 
 Compiler::Compiler(const std::string &path)
 {
+
     this->path = path;
     std::ifstream in(path);
     Parser parser(in);
 
-    m_program = std::move(parser.Parse());
+    try
+    {
+        m_program = std::move(parser.Parse());
+    }
+    catch (const std::exception &e)
+    {
+        Logger::Log(path + ":" + std::to_string(parser.GetLineNumber()) + ":\n" + std::string{e.what()} + '\n' + parser.GetCurrentLine(), ERROR);
+        throw;
+    }
 
     m_program->Optimize();
 
@@ -41,9 +51,10 @@ int Compiler::Compile(const std::string &out)
     // Do stuff
     std::ofstream outFile(out);
 
-    outFile << m_program->Compile() << std::endl;
+    std::string res = m_program->Compile();
+    outFile << res << std::endl;
 
     outFile.close();
     // GenerateExecutable(out);
-    return 1;
+    return 0;
 }

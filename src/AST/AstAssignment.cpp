@@ -35,9 +35,14 @@ std::string AstAssignment::Compile(ContextMap &offsets)
 
     if (m_right->GetValueType() == Literal) // literal
     {
+        if (m_right->UnderlyingType() == STRING) // Write it in .rodata
+        {
+
+        }
         const std::string val = "$" + std::to_string(m_right->Evaluate());
         return Utils::MoveLiteralToStack(val, asmName);
     }
+
 
     std::string res = m_right->Compile(offsets);
     return res + Utils::MoveFromRax(asmName);
@@ -50,11 +55,11 @@ std::string AstAssignment::Dump()
 
 std::unique_ptr<Ast> AstAssignment::Optimize()
 {
-    std::cout << "WOOOO Optimize " << std::endl;
+    // std::cout << "WOOOO Optimize " << std::endl;
     auto right = m_right->Optimize();
     if (right != nullptr)
     {
-        std::cout << "Right not null feur ! " << std::endl;
+        // std::cout << "Right not null feur ! " << std::endl;
         m_right = std::move(right);
     }
     return nullptr;

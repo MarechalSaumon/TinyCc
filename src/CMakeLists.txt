@@ -6,4 +6,4 @@ add_subdirectory("Variables")
 add_subdirectory("Lexer")
 add_subdirectory("Parser")
 
-target_sources(TinyCc PRIVATE Compiler.cpp Function.cpp main.cpp Program.cpp Utils.cpp)
+target_sources(TinyCc PRIVATE ErrorManager.cpp Compiler.cpp Function.cpp main.cpp Program.cpp Utils.cpp)

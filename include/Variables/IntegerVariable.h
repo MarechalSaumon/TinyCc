@@ -12,10 +12,7 @@ class IntegerVariable : public Variable {
     public:
         IntegerVariable(int offset, std::string m_name, std::unique_ptr<Ast> ref = std::make_unique<AstLiteral>(0));
 
-    VariableType GetType() const override
-    {
-            return INTEGER;
-            }
+        VariableType GetType() const override;
 
 };
 

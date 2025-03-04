@@ -28,7 +28,7 @@ std::string Function::Compile()
 {
     static const std::vector<std::string> args_reg = { "%rdi", "%rsi", "%rdx",
                                                    "%rcx", "%r8",  "%r9" };
-    auto offsets = std::unordered_map<std::string, int>();
+    std::unordered_map<std::string, int> offsets;
     int offset = 1;
     for (const auto &s : *m_context)
     {

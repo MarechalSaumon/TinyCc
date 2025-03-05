@@ -20,9 +20,9 @@ inline std::string VariableTypeToString(VariableType type)
     switch (type)
     {
         case INTEGER:
-            return "INTEGER";
+            return "int";
         case STRING:
-            return "STRING";
+            return "string";
         case NONE:
             return "NONE";
         default:

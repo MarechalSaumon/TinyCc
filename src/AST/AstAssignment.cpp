@@ -7,6 +7,7 @@
 #include <Utils.h>
 #include <Variables/Variable.h>
 #include <iostream>
+#include <Logger.h>
 #include <memory>
 #include <ostream>
 #include <string>
@@ -50,11 +51,13 @@ std::string AstAssignment::Compile(ContextMap &offsets)
 
 std::string AstAssignment::Dump()
 {
+    Logger::Log("Dumping Assignment", DEBUG);
     return "set " + m_left + " = " + m_right->Dump();
 }
 
 std::unique_ptr<Ast> AstAssignment::Optimize()
 {
+    Logger::Log("Optimizing Assignment", DEBUG);
     // std::cout << "WOOOO Optimize " << std::endl;
     auto right = m_right->Optimize();
     if (right != nullptr)

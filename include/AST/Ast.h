@@ -5,6 +5,8 @@
 #ifndef AST_H
 #define AST_H
 #include <Enum.h>
+#include <iostream>
+#include <Logger.h>
 #include <map>
 #include <memory>
 #include <string>
@@ -42,6 +44,7 @@ public:
 
     virtual std::unique_ptr<Ast> Optimize()
     {
+        Logger::Log("Default optimize", DEBUG);
         return nullptr;
     }
 

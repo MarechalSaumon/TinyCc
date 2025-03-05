@@ -35,7 +35,7 @@ void Variable::SetOffset(const int offset)
     m_offset = offset;
 }
 
-std::unique_ptr<Variable> make_variable(int offset, std::string m_name, VariableType type)
+std::unique_ptr<Variable> make_variable(int offset, const std::string& m_name, VariableType type)
 {
     if (type == STRING)
         return std::make_unique<StringVariable>(offset, m_name);

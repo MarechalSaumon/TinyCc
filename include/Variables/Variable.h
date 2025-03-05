@@ -59,6 +59,6 @@ private:
 };
 
 
-std::unique_ptr<Variable> make_variable(int offset, std::string m_name, VariableType type);
+std::unique_ptr<Variable> make_variable(int offset, const std::string& name, VariableType type);
 
 #endif // VARIABLE_H

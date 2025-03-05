@@ -2,6 +2,7 @@
 // Created by saumonbro on 2/19/25.
 //
 
+#include <Logger.h>
 #include <AST/AstReference.h>
 
 long AstReference::Evaluate()
@@ -16,10 +17,12 @@ std::string AstReference::Compile([[maybe_unused]] ContextMap &offsets)
 
 std::unique_ptr<Ast> AstReference::Optimize()
 {
+
     return Ast::Optimize();
 }
 
 std::string AstReference::Dump()
 {
+    Logger::Log("Dumping Reference", DEBUG);
     return "&" + this->name;
 }

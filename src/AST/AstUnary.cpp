@@ -2,6 +2,7 @@
 // Created by saumonbro on 2/19/25.
 //
 
+#include <Logger.h>
 #include <AST/AstLiteral.h>
 #include <AST/AstUnary.h>
 #include <Utils.h>
@@ -34,6 +35,8 @@ std::string AstUnary::Compile(ContextMap &offsets)
 
 std::unique_ptr<Ast> AstUnary::Optimize()
 {
+    Logger::Log("Optimizing Unary", DEBUG);
+
     auto newOp = m_operand->Optimize();
     if (newOp == nullptr) // Could not optimize
     {
@@ -45,6 +48,7 @@ std::unique_ptr<Ast> AstUnary::Optimize()
 
 std::string AstUnary::Dump()
 {
+    Logger::Log("Dumping Unary", DEBUG);
     return Token::opToString(m_operation) + " " + m_operand->Dump();
 }
 

@@ -2,6 +2,7 @@
 // Created by saumonbro on 2/19/25.
 //
 
+#include <Logger.h>
 #include <AST/AstIdentifier.h>
 #include <Utils.h>
 #include <Variables/Variable.h>
@@ -19,6 +20,7 @@ std::string AstIdentifier::Compile(ContextMap &offsets)
 
 std::string AstIdentifier::Dump()
 {
+    Logger::Log("Dumping Identifier", DEBUG);
     return this->name;
 }
 

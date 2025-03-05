@@ -2,6 +2,7 @@
 // Created by saumonbro on 2/19/25.
 //
 
+#include <Logger.h>
 #include <AST/AstLiteral.h>
 
 #include "Utils.h"
@@ -23,11 +24,13 @@ std::string AstLiteral::Compile([[maybe_unused]] ContextMap &offsets)
 
 std::unique_ptr<Ast> AstLiteral::Optimize()
 {
+    Logger::Log("Optimizing Literal", DEBUG);
     return std::make_unique<AstLiteral>(value);
 }
 
 std::string AstLiteral::Dump()
 {
+    Logger::Log("Dumping Literal", DEBUG);
     return std::to_string(value);
 }
 

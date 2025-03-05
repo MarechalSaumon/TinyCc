@@ -21,7 +21,12 @@ public:
 
     [[nodiscard]] std::string Compile();
     std::string Dump();
+
+    std::string GetPrototype();
+
     void Optimize();
+
+    bool Returns();
 
     std::string GetName()
     {

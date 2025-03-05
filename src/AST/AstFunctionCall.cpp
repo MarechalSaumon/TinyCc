@@ -5,6 +5,7 @@
 #include <AST/AstFunctionCall.h>
 #include <Utils.h>
 #include <complex>
+#include <Logger.h>
 #include <utility>
 
 long AstFunctionCall::Evaluate()
@@ -38,7 +39,17 @@ std::string AstFunctionCall::Compile(ContextMap &offsets)
 
 std::string AstFunctionCall::Dump()
 {
-    return m_function->Dump();
+    Logger::Log("Dumping Function call", DEBUG);
+    std::string res = m_function->GetName() + "(";
+    for (size_t i = 0; i < m_args.size(); i++)
+    {
+        res += m_args[i]->Dump();
+        if (i != m_args.size() - 1)
+            res += ", ";
+
+    }
+    res += ")\n";
+    return res;
 }
 
 std::unique_ptr<Ast> AstFunctionCall::Optimize()

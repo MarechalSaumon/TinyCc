@@ -14,6 +14,8 @@ class Program
 public:
     std::string Compile();
 
+    bool Returns();
+
     explicit Program(
         std::unordered_map<std::string, std::shared_ptr<Function>> functions);
     void Optimize() const;

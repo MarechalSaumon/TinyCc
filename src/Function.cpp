@@ -3,9 +3,12 @@
 //
 
 #include <Function.h>
+#include <iostream>
 #include <Utils.h>
 #include <list>
 #include <utility>
+#include <AST/AstReference.h>
+#include <AST/AstReturn.h>
 
 long Function::Call(
     std::unordered_map<std::string, std::unique_ptr<AstLiteral>> context)
@@ -73,12 +76,35 @@ std::string Function::Dump()
     return res;
 }
 
+std::string Function::GetPrototype()
+{
+    std::string res = (m_isStatic ? "static " : "") +  m_name + "(";
+
+    for (size_t i = 0; i < m_args.size(); i++)
+    {
+        const auto &s = m_args[i];
+        res += (VariableTypeToString((*m_context)[s]->GetType()) + " ");
+        res += s;
+        if (i != m_args.size() - 1)
+            res += " ";
+    }
+
+    return res + ");";
+}
+
 void Function::Optimize()
 {
+    Logger::Log("Optimizing function", DEBUG);
     std::unique_ptr<Ast> cur = m_body->Optimize();
     if (cur == nullptr)
     {
         return;
     }
     m_body = std::move(cur);
+}
+
+
+bool Function::Returns()
+{
+    return m_body->Returns();
 }

@@ -27,6 +27,13 @@ Compiler::Compiler(const std::string &path)
 
     m_program->Optimize();
 
+
+    if (!m_program->Returns())
+    {
+        Logger::Log("Some functions do not return a value on all execution path.", ERROR);
+        throw std::runtime_error("");
+    }
+
     /*
     offsets = parser.GetOffsets();
 

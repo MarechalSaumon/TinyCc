@@ -2,6 +2,7 @@
 // Created by saumonbro on 2/22/25.
 //
 
+#include <Logger.h>
 #include <AST/AstIf.h>
 #include <Utils.h>
 
@@ -54,11 +55,14 @@ std::string AstIf::Compile(ContextMap &offsets)
 
 std::string AstIf::Dump()
 {
-    return "";
+    Logger::Log("Dumping If", DEBUG);
+    return "if (" + m_condition->Dump() + ")\n{" + m_block->Dump() + "}\n"; ;
 }
 
 std::unique_ptr<Ast> AstIf::Optimize()
 {
+    Logger::Log("Optimizing if", DEBUG);
+
     auto res = m_condition->Optimize();
     auto block = m_block->Optimize();
     std::unique_ptr<Ast> elseBlock = nullptr;
@@ -93,4 +97,13 @@ std::unique_ptr<Ast> AstIf::Optimize()
         }
     }
     return nullptr;
+}
+
+bool AstIf::Returns()
+{
+    if (m_block->Returns())
+    {
+        return m_elseBlock && m_elseBlock->Returns();
+    }
+    return false;
 }

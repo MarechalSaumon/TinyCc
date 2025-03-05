@@ -8,6 +8,7 @@
 #include <bits/ios_base.h>
 #include <ios>
 #include <iostream>
+#include <Logger.h>
 #include <ostream>
 
 long AstBinary::Evaluate()
@@ -147,6 +148,8 @@ std::string AstBinary::Compile(ContextMap &offsets)
 
 std::unique_ptr<Ast> AstBinary::Optimize()
 {
+    Logger::Log("Optimizing Binary", DEBUG);
+
     auto left = m_left->Optimize();
     auto right = m_right->Optimize();
 
@@ -184,6 +187,7 @@ std::unique_ptr<Ast> AstBinary::Optimize()
 
 std::string AstBinary::Dump()
 {
+    Logger::Log("Dumping Binary", DEBUG);
     return m_left->Dump() + " " + Token::opToString(op) + " " + m_right->Dump();
 }
 

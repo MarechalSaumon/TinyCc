@@ -4,6 +4,7 @@
 
 #include "Program.h"
 
+#include <Logger.h>
 #include <utility>
 
 std::string Program::Compile()
@@ -23,6 +24,20 @@ std::string Program::Compile()
         res += func->Compile();
     }
 
+    return res;
+}
+
+bool Program::Returns()
+{
+    bool res = true;
+    for (const auto &func : m_functions)
+    {
+        if (!func.second->Returns())
+        {
+            Logger::Log("Function '" + func.second->GetPrototype() + "' does not return a value on all execution path.", WARNING);
+            return false;
+        }
+    }
     return res;
 }
 

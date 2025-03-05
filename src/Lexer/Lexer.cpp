@@ -74,7 +74,7 @@ void Lexer::SkipWhitespaces()
 void Lexer::SkipComments() const
 {
     SkipWhile(std::function<bool(int)>(
-        [](const char c) -> bool { return c != '\n'; }));
+        [](const char c) -> bool { return c != '\n' && c != -1; }));
 }
 
 std::unordered_map<char, std::string> m_operatorFollow = {

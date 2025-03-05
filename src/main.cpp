@@ -71,9 +71,10 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+
     try
     {
-        int res = compile(def, opts);
+        int res = compile(files[0], opts);
         if (res == 0)
         {
             Logger::Log("Compilation successful.", INFO);

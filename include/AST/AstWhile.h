@@ -16,6 +16,8 @@ public:
     std::string Compile(ContextMap &offsets) override;
     std::string Dump() override;
     std::unique_ptr<Ast> Optimize() override;
+    bool Returns() override;
+
 
 private:
     std::unique_ptr<Ast> m_condition;

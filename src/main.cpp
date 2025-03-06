@@ -31,7 +31,6 @@ void displayHelp()
 
 int main(int argc, char *argv[])
 {
-    std::string def = "/home/saumonbro/Desktop/CodeForFun/C++/TinyCC2/TinyCc/test.txt";
 
     unsigned long opts = 0;
 

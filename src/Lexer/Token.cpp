@@ -60,8 +60,8 @@ std::string Token::tokenToString(TokenType token)
         { TOKEN_AND, "TOKEN_AND" },
         { TOKEN_OR, "TOKEN_OR" },
         { TOKEN_SET, "TOKEN_SET" },
-        { TOKEN_LEFT_BRACKET, "TOKEN_LEFT_BRACKET" },
-        { TOKEN_RIGHT_BRACKET, "TOKEN_RIGHT_BRACKET" },
+        { TOKEN_LEFT_BRACE, "TOKEN_LEFT_BRACKET" },
+        { TOKEN_RIGHT_BRACE, "TOKEN_RIGHT_BRACKET" },
         { TOKEN_SEMICOLON, "TOKEN_SEMICOLON" },
         { TOKEN_COMMA, "TOKEN_COMMA" },
         { TOKEN_IF, "TOKEN_IF" },
@@ -73,6 +73,8 @@ std::string Token::tokenToString(TokenType token)
         { TOKEN_STRING, "TOKEN_STRING" },
         { TOKEN_STRING_TYPE, "TOKEN_STRING_TYPE" },
         { TOKEN_INT_TYPE, "TOKEN_INT_TYPE" },
+        {TOKEN_LEFT_BRACKET, "TOKEN_LEFT_BRACKET" },
+        {TOKEN_RIGHT_BRACKET, "TOKEN_RIGHT_BRACKET" },
     };
 
     return tokenMap.at(token);

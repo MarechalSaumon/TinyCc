@@ -14,6 +14,9 @@
 class Utils
 {
 public:
+    static std::string CurrentStringLabel;
+
+    static std::string GetNexStringLabel();
 
     static std::string LogicalNot(const std::string &reg);
 
@@ -37,6 +40,8 @@ public:
     static std::string MoveLiteralToStack(const std::string &literal, const std::string &name);
 
     static std::string MoveLiteralToRax(long value);
+
+    static std::string MoveLiteralToRax(const std::string &value);
 
     static std::string
     BuildPrologue(const std::unordered_map<std::string, int> &offsets);

@@ -12,6 +12,7 @@
 class AstBlock : public Ast
 {
 public:
+
     long Evaluate() override;
     explicit AstBlock(std::vector<std::unique_ptr<Ast>> statements);
     std::string Compile(ContextMap &offsets) override;

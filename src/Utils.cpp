@@ -5,6 +5,20 @@
 #include <Utils.h>
 
 unsigned Utils::CurrentLabel = 0;
+std::string Utils::CurrentStringLabel = "A";
+static char currentLetter = 'a';
+
+std::string Utils::GetNexStringLabel()
+{
+    if (currentLetter == 'z')
+    {
+        currentLetter = 'a';
+        CurrentStringLabel += 'z';
+    }
+    std::string res = CurrentStringLabel + std::to_string(currentLetter);
+    currentLetter += 1;
+    return res;
+}
 
 std::string Utils::LogicalNot(const std::string &reg)
 {
@@ -14,7 +28,7 @@ std::string Utils::LogicalNot(const std::string &reg)
     res += "sete %al\n";
     return res;
 }
-
+// reg1 || reg2
 std::string Utils::LogicalOr(const std::string &reg1, const std::string &reg2)
 {
     std::string res_false = GetNewLocalLabel();
@@ -91,6 +105,11 @@ std::string Utils::MoveLiteralToRax(long value)
     return std::string("mov $") + std::to_string(value) + ", %rax\n";
 }
 
+std::string Utils::MoveLiteralToRax(const std::string& value)
+{
+    return std::string("mov $") + value + ", %rax\n";
+}
+
 std::string
 Utils::BuildPrologue(const std::unordered_map<std::string, int> &offsets)
 {
@@ -107,6 +126,10 @@ Utils::BuildEpilogue(const std::string &func,
 {
     std::string res;
     res += "\n.Lend" + func + ":\n";
+    if (func == "main")
+    {
+        res += "call clear\n";
+    }
     res += "add $" + std::to_string((offsets.size()) * 8) + ", %rsp\n";
     res += "pop %rbp\n";
     res += "ret\n\n\n";

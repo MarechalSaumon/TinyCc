@@ -15,6 +15,10 @@ public:
 
     static int GenerateExecutable(const std::string &filepath);
 
+    std::string GetBuiltins();
+
+    std::string GetRodata();
+
     int Compile(const std::string &out = "out.S");
 
 private:
@@ -22,6 +26,7 @@ private:
     std::string path;
     // std::unique_ptr<Ast> root;
     std::unique_ptr<Program> m_program;
+    std::vector<std::pair<std::string, std::string>> rodata_;
 };
 
 #endif // COMPILER_H

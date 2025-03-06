@@ -11,6 +11,7 @@
 class AstFunctionCall : public Ast
 {
 public:
+
     long Evaluate() override;
 
     AstFunctionCall(const std::shared_ptr<Function> &function,

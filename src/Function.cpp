@@ -43,7 +43,7 @@ std::string Function::Compile()
     // compute offsets for each argument
     for (const auto &arg : m_args)
     {
-        if (*m_context->find(arg) == *m_context->end())
+        if (!m_context->contains(arg))
         {
             offsets[arg] = offset * 8;
             offset++;
@@ -62,7 +62,9 @@ std::string Function::Compile()
     }
 
     res += m_body->Compile(m_context);
+
     res += "\n";
+
     res += Utils::BuildEpilogue(m_name, offsets);
     return res;
 }

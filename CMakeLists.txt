@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.16.3)
 project(TinyCc)
 
-add_compile_options(-Wall -Wextra -Werror -pedantic -Wold-style-cast)
+add_compile_options(-Wall -Wextra -Werror -pedantic -fsanitize=address -g -Wold-style-cast)
+add_link_options(-fsanitize=address -g)
 
 set(CMAKE_CXX_STANDARD 20)
 

@@ -25,6 +25,8 @@ inline std::string LoggingLevelToString(LoggingLevel level)
     }
 }
 
+inline Logger Logger::m_instance{};
+
 // Get current date/time, format is YYYY-MM-DD.HH:mm:ss
 inline std::string GetDateTime() {
     time_t     now = time(nullptr);
@@ -38,21 +40,18 @@ inline std::string GetDateTime() {
 template<typename T>
 void Logger::Log(const T& msg, LoggingLevel level)
 {
-    static Logger m_instance;
     m_instance.Send(msg, level);
 }
 
 template<>
 inline void Logger::Log(const std::string& msg, LoggingLevel level)
 {
-    static Logger m_instance;
     m_instance.Send(msg, level);
 }
 
 
 inline void Logger::SetLogLevel(LoggingLevel level)
 {
-    static Logger m_instance;
     m_instance.SetLevel(level);
 }
 

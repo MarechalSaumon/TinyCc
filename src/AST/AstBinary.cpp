@@ -103,9 +103,44 @@ std::string CompileEqual(const std::string &left)
     return res;
 }
 
+std::string AstBinary::CompileWithString(ContextMap& offsets)
+{
+    std::string res = "push %rbx\n"; // save rbx
+
+    res += m_left->Compile(offsets); // rax contains result
+    res += "mov %rax, %rbx\n"; // Store the result of left in rbx
+    res += m_right->Compile(offsets); // right in rax
+
+    if (m_left->UnderlyingType() == STRING && m_right->UnderlyingType() == STRING)
+    {
+        if (op == TOKEN_PLUS) // Concat strings
+        {
+            res += "mov %rbx, %rdi\n";
+            res += "mov %rax, %rsi\n";
+            res += "call concat_str\n";
+        }
+        else
+        {
+            throw std::invalid_argument("Invalid operation ");
+        }
+    }
+    else
+    {
+        throw std::invalid_argument("Invalid operation ");
+    }
+
+    return res + "pop %rbx\n";
+}
+
 // Result is stored in rbx, then moved to rax at the end of the function
 std::string AstBinary::Compile(ContextMap &offsets)
 {
+
+    if (m_left->UnderlyingType() == STRING || m_right->UnderlyingType() == STRING)
+    {
+        return CompileWithString(offsets);
+    }
+    // This is good for numerals
     std::string res = "push %rbx\n"; // save rbx
 
     res += m_left->Compile(offsets); // rax contains result

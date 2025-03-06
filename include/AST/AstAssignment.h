@@ -12,6 +12,9 @@
 class AstAssignment final : public Ast
 {
 public:
+
+
+
     long Evaluate() override;
     explicit AstAssignment(const std::string &left, std::unique_ptr<Ast> right,
                            ContextMap context);

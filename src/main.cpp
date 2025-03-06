@@ -8,10 +8,8 @@
 int compile(const std::string &def, unsigned long opts)
 {
     (void) opts;
-    Logger::SetLogLevel(DEBUG);
-    Compiler compiler(
-        def
-    );
+    //Logger::SetLogLevel(DEBUG);
+    Compiler compiler(def);
 
     return compiler.Compile();
 }
@@ -70,7 +68,6 @@ int main(int argc, char *argv[])
         Logger::Log("No input files.\n" + Usage(argv[0]), ERROR);
         return 1;
     }
-
 
     try
     {

@@ -4,11 +4,14 @@
 
 #ifndef ASTLITERAL_H
 #define ASTLITERAL_H
+#include <variant>
+
 #include "Ast.h"
 
 class AstLiteral final : public Ast
 {
 public:
+
     explicit AstLiteral(long value)
         : value(value)
     {}

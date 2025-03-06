@@ -25,6 +25,8 @@ Compiler::Compiler(const std::string &path)
         throw;
     }
 
+    rodata_ = parser.GetRodata();
+
     m_program->Optimize();
 
 
@@ -53,6 +55,21 @@ int Compiler::GenerateExecutable(const std::string &filepath)
     return std::system(command.c_str());
 }
 
+std::string Compiler::GetBuiltins()
+{
+    return "";
+}
+
+std::string Compiler::GetRodata()
+{
+    std::string res = ".section .rodata\n";
+    for (const auto & [label, value] : rodata_)
+    {
+        res += (label + ":\n.asciz \"" + value + "\"\n");
+    }
+    return res;
+}
+
 int Compiler::Compile(const std::string &out)
 {
     // Do stuff
@@ -60,6 +77,7 @@ int Compiler::Compile(const std::string &out)
 
     std::string res = m_program->Compile();
     outFile << res << std::endl;
+    outFile << GetRodata() << std::endl;
 
     outFile.close();
     // GenerateExecutable(out);

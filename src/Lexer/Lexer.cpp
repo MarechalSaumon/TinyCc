@@ -4,6 +4,7 @@
 #include <Lexer/Lexer.h>
 #include <functional>
 #include <iostream>
+#include <Logger.h>
 #include <sstream>
 
 Lexer::Lexer(std::istream &input)
@@ -17,6 +18,7 @@ Token Lexer::Pop()
         ComputeNextToken();
     }
     const Token res = m_currentToken;
+    Logger::Log("Popping token: " + Token::tokenToString(res.Type) + ", " + res.Data, DEBUG);
     m_currentToken.Type = TOKEN_NONE;
     return res;
 }
@@ -152,9 +154,10 @@ int Lexer::ReturnDebug([[maybe_unused]] const std::string &pref = "")
 }
 
 static const std::unordered_map<char, TokenType> SpecialCharacters = {
-    { '{', TOKEN_LEFT_BRACKET }, { '}', TOKEN_RIGHT_BRACKET },
+    { '{', TOKEN_LEFT_BRACE }, { '}', TOKEN_RIGHT_BRACE },
     { '(', TOKEN_LEFTPAR },      { ')', TOKEN_RIGHTPAR },
-    { ';', TOKEN_SEMICOLON },    { ',', TOKEN_SEMICOLON },
+    { ';', TOKEN_SEMICOLON },    { ',', TOKEN_COMMA },
+    {'[', TOKEN_LEFT_BRACKET}, {']', TOKEN_RIGHT_BRACKET},
 };
 
 static const std::unordered_map<std::string, TokenType> Keywords = {
@@ -231,7 +234,7 @@ int Lexer::ComputeNextToken()
     {
         Advance();
         SetCurrentToken(SpecialCharacters.at(c), std::string{c});
-        return ReturnDebug("Special Character : " + c);
+        return ReturnDebug("Special Character : ");
     }
 
     if (c == '"')
@@ -240,9 +243,11 @@ int Lexer::ComputeNextToken()
         const std::string str = ReadWhile(std::function<bool(int)>(
             [](const char c) -> bool { return c != '"'; }));
         Advance();
+        Logger::Log("Built string literal: " + str, DEBUG);
         SetCurrentToken(TOKEN_STRING, str);
+        return ReturnDebug("String");
     }
 
     SetCurrentToken(TOKEN_EOF, "-1");
-    return ReturnDebug("FAILURE " + (c));
+    return ReturnDebug("FAILURE ");
 }

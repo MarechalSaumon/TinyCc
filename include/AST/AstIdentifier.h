@@ -14,6 +14,7 @@
 class AstIdentifier final : public Ast
 {
 public:
+
     long Evaluate() override;
     explicit AstIdentifier(std::string value, ContextMap ctxt)
         : name(std::move(value))

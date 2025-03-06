@@ -9,6 +9,7 @@
 class AstIf : public Ast
 {
 public:
+
     long Evaluate() override;
 
     AstIf(std::unique_ptr<Ast> condition, std::unique_ptr<Ast> block,

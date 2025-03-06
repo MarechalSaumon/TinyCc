@@ -51,10 +51,12 @@ class Logger {
         template<typename T>
         static void Log(const T&, LoggingLevel level = DEBUG);
 
+        Logger() : m_stream(std::cout), m_level(DEBUG)
+        {
+        }
+
        private:
-            Logger() : m_stream(std::cout), m_level(DEBUG)
-            {
-            }
+
 
            template<typename T>
            void Send(const T&, LoggingLevel level = DEBUG);

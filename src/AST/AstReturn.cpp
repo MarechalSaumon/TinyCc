@@ -32,7 +32,7 @@ std::unique_ptr<Ast> AstReturn::Optimize()
 {
     Logger::Log("Optimizing Return", DEBUG);
 
-    auto newStatement = m_expression->Optimize();
+    std::unique_ptr<Ast> newStatement = m_expression->Optimize();
     if (newStatement)
     {
         m_expression = std::move(newStatement);

@@ -57,14 +57,19 @@ public:
     std::string GetCurrentLine() const;
 
     int GetLineNumber() const;
+    std::vector<std::pair<std::string, std::string>> GetRodata();
 
 private:
     std::string Eat(TokenType type);
+
+
     Lexer m_lexer;
 
     std::unordered_map<std::string, std::shared_ptr<Function>> m_functions;
     ContextMap m_context;
     int m_offset;
+
+    std::vector<std::pair<std::string, std::string>> rodata_;
 };
 
 #endif // PARSER_H

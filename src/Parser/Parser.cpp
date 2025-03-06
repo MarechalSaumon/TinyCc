@@ -19,8 +19,7 @@
 #include <complex>
 #include <iostream>
 #include <map>
-
-
+#include <AST/AstLiteralString.h>
 
 Parser::Parser(std::istream &input)
     : m_lexer(input)
@@ -42,18 +41,31 @@ std::unique_ptr<Ast> Parser::FunctionCall(const std::string &func_name)
         Eat(TOKEN_COMMA);
     }
 
-    unsigned long argc = m_functions.at(func_name)->GetArgc();
-    if (arguments.size() != argc)
+    if (!m_functions.contains(func_name)) // stdlib ?
     {
-        throw std::runtime_error(
-            "Function called with wrong number of arguments (expected "
-            + std::to_string(argc) + " but got"
-            + std::to_string(arguments.size()) + ")");
-    }
-    Eat(TOKEN_RIGHTPAR);
+        Logger::Log("Reading stdlib function.", INFO);
+        std::vector<std::string> params;
+        auto func = std::make_shared<Function>(func_name, params, m_context);
+        Eat(TOKEN_RIGHTPAR);
 
-    return std::make_unique<AstFunctionCall>(m_functions[func_name],
-                                             std::move(arguments));
+        return std::make_unique<AstFunctionCall>(func,
+                                                 std::move(arguments));
+    }
+    else
+    {
+        unsigned long argc = m_functions.at(func_name)->GetArgc();
+        if (arguments.size() != argc)
+        {
+            throw std::runtime_error(
+                "Function called with wrong number of arguments (expected "
+                + std::to_string(argc) + " but got"
+                + std::to_string(arguments.size()) + ")");
+        }
+        Eat(TOKEN_RIGHTPAR);
+
+        return std::make_unique<AstFunctionCall>(m_functions[func_name],
+                                                 std::move(arguments));
+    }
 }
 
 std::unique_ptr<Ast> Parser::Factor()
@@ -67,6 +79,13 @@ std::unique_ptr<Ast> Parser::Factor()
             return FunctionCall(tmp);
         }
         return std::make_unique<AstIdentifier>(tmp.data(), m_context);
+    }
+    if (CurrentToken().Type == TOKEN_STRING)
+    {
+        std::string label = Utils::GetNewLocalLabel();
+        rodata_.emplace_back(label, Eat(TOKEN_STRING));
+        Logger::Log("Pushing ");
+        return std::make_unique<AstLiteralString>( label);
     }
     if (CurrentToken().Type == TOKEN_NUMBER)
     {
@@ -252,9 +271,9 @@ std::unique_ptr<Ast> Parser::ParseWhile(const std::string &func)
 std::unique_ptr<Ast> Parser::ParseBody(const std::string &func)
 {
     std::vector<std::unique_ptr<Ast>> children;
-    Eat(TOKEN_LEFT_BRACKET);
+    Eat(TOKEN_LEFT_BRACE);
 
-    while (CurrentToken().Type != TOKEN_RIGHT_BRACKET)
+    while (CurrentToken().Type != TOKEN_RIGHT_BRACE)
     {
         if (CurrentToken().Type == TOKEN_RETURN)
         {
@@ -272,12 +291,12 @@ std::unique_ptr<Ast> Parser::ParseBody(const std::string &func)
         {
             Eat(TOKEN_SEMICOLON);
         }
-        if (CurrentToken().Type == TOKEN_RIGHT_BRACKET)
+        if (CurrentToken().Type == TOKEN_RIGHT_BRACE)
         {
             break;
         }
     }
-    Eat(TOKEN_RIGHT_BRACKET);
+    Eat(TOKEN_RIGHT_BRACE);
     return std::make_unique<AstBlock>(std::move(children));
 }
 
@@ -296,8 +315,7 @@ std::shared_ptr<Function> Parser::ParseFunction()
         Eat(TOKEN_STATIC);
         isStatic = true;
     }
-    m_context =
-        std::make_shared<std::map<std::string, std::unique_ptr<Variable>>>();
+    m_context = std::make_shared<std::map<std::string, std::unique_ptr<Variable>>>();
     m_offset = 1;
 
     std::string id = Eat(TOKEN_IDENTIFIER);
@@ -388,4 +406,10 @@ std::string Parser::Eat(const TokenType type)
             + Token::tokenToString(curType) + " with value " + data);
     }
     return data;
+}
+
+
+std::vector<std::pair<std::string, std::string>> Parser::GetRodata()
+{
+    return rodata_;
 }

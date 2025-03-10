@@ -7,7 +7,7 @@
 #include <Lexer/Token.hpp>
 #include <memory>
 
-#include "Ast.h"
+#include <AST/Ast.h>
 
 class AstBinary : public Ast
 {

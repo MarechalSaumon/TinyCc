@@ -158,13 +158,17 @@ static const std::unordered_map<char, TokenType> SpecialCharacters = {
     { '(', TOKEN_LEFTPAR },      { ')', TOKEN_RIGHTPAR },
     { ';', TOKEN_SEMICOLON },    { ',', TOKEN_COMMA },
     {'[', TOKEN_LEFT_BRACKET}, {']', TOKEN_RIGHT_BRACKET},
+    {'.', TOKEN_DOT},
 };
 
 static const std::unordered_map<std::string, TokenType> Keywords = {
     { "set", TOKEN_SET },      { "if", TOKEN_IF },
     { "else", TOKEN_ELSE },    { "return", TOKEN_RETURN },
     { "while", TOKEN_WHILE },  { "static", TOKEN_STATIC },
-    { "int", TOKEN_INT_TYPE }, { "string", TOKEN_STRING_TYPE },
+    { "int", TOKEN_TYPE }, { "string", TOKEN_TYPE },
+    {"void", TOKEN_TYPE}, {"fields", TOKEN_FIELDS},
+    {"class", TOKEN_CLASS}, {"public", TOKEN_VISIBILITY},
+    {"private", TOKEN_VISIBILITY},
 
 };
 

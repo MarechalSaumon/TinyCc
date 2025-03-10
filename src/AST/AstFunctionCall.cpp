@@ -29,8 +29,15 @@ std::string AstFunctionCall::Compile(ContextMap &offsets)
     // compute args and move into registers
     for (size_t i = 0; i < m_args.size(); i++)
     {
-        res += m_args[i]->Compile(offsets);
-        res += Utils::MoveRegisterToRegister("%rax", args_reg[i]);
+        if (m_args[i]->GetValueType() == Literal)
+        {
+            res += Utils::MoveLiteralToRegister("$" + std::to_string(m_args[i]->Evaluate()), args_reg[i]);
+        }
+        else
+        {
+            res += m_args[i]->Compile(offsets);
+            res += Utils::MoveWhateverToWhatever("%rax", args_reg[i]);
+        }
     }
 
     res += "call " + m_function->GetName() + "\n";

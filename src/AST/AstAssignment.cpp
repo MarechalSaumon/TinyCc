@@ -2,6 +2,7 @@
 // Created by saumonbro on 2/19/25.
 //
 
+#include <Context.h>
 #include <AST/AstAssignment.h>
 #include <AST/AstLiteral.h>
 #include <Utils.h>
@@ -21,7 +22,7 @@ long AstAssignment::Evaluate()
 }
 
 AstAssignment::AstAssignment(const std::string &left,
-                             std::unique_ptr<Ast> right, ContextMap context)
+                             std::unique_ptr<Ast> right, std::shared_ptr<std::map<std::string, std::shared_ptr<Variable>>> context)
 {
     m_context = std::move(context);
     m_left = left;
@@ -32,7 +33,7 @@ std::string AstAssignment::Compile(ContextMap &offsets)
 {
     //int index = (*offsets)[m_left]->GetOffset();
 
-    const std::string& asmName = (*offsets)[m_left]->GetAssemblyAlias();
+    const std::string& asmName = (*offsets.GetOffsets())[m_left]->GetAssemblyAlias();
 
     if (m_right->GetValueType() == Literal) // literal
     {

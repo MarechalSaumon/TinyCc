@@ -4,7 +4,7 @@
 
 #ifndef ASTRETURN_H
 #define ASTRETURN_H
-#include "Ast.h"
+#include <AST/Ast.h>
 
 class AstReturn : public Ast
 {

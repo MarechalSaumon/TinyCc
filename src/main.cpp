@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 
     for (int i = 1; i < argc; ++i)
     {
-        std::string arg = argv[i];
+        const std::string& arg = argv[i];
 
         if (arg == "-v")
         {
@@ -64,18 +64,17 @@ int main(int argc, char *argv[])
 
     if (files.empty())
     {
-        Logger::Log("No input files.\n" + Usage(argv[0]), ERROR);
+        Logger::Log("No input files.\n" + Usage(argv[0]), CRITICAL);
         return 1;
     }
 
     try
     {
-        int res = compile(files[0], opts);
-        if (res == 0)
+        if (compile(files[0], opts) == 0)
         {
             Logger::Log("Compilation successful.", INFO);
         }
-    } catch (const std::exception &e)
+    } catch (const std::exception &_)
     {
         return 1;
     }

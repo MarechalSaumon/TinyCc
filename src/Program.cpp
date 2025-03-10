@@ -30,12 +30,19 @@ std::string Program::Compile()
 bool Program::Returns()
 {
     bool res = true;
-    for (const auto &func : m_functions)
+    for (const auto &[name, func] : m_functions)
     {
-        if (!func.second->Returns())
+        if (!func->Returns())
         {
-            Logger::Log("Function '" + func.second->GetPrototype() + "' does not return a value on all execution path.", WARNING);
-            return false;
+            if (func->GetReturnType() == VOID)
+            {
+                Logger::Log("Function '" + func->GetPrototype() + "' is declared as void and should not return a value.", WARNING);
+            }
+            else
+            {
+                Logger::Log("Function '" + func->GetPrototype() + "' does not return a value on all execution path.", WARNING);
+            }
+            res = false;
         }
     }
     return res;

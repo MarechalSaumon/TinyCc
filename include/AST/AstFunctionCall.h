@@ -5,7 +5,6 @@
 #ifndef ASTFUNCTIONCALL_H
 #define ASTFUNCTIONCALL_H
 #include <AST/Ast.h>
-#include <AST/AstBlock.h>
 #include <Function.h>
 
 class AstFunctionCall : public Ast

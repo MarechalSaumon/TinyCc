@@ -24,7 +24,7 @@ public:
                                  const std::string &reg2);
     static std::string StackPtr();
     static std::string MoveRegisterToStack(const std::string &reg, int offset);
-    static std::string MoveRegisterToRegister(const std::string &reg1,
+    static std::string MoveWhateverToWhatever(const std::string &reg1,
                                               const std::string &reg2);
     static std::string MoveToRax(int offset);
 
@@ -40,6 +40,8 @@ public:
     static std::string MoveLiteralToStack(const std::string &literal, const std::string &name);
 
     static std::string MoveLiteralToRax(long value);
+
+    static std::string MoveLiteralToRegister(const std::string &value, const std::string &reg);
 
     static std::string MoveLiteralToRax(const std::string &value);
 

@@ -4,6 +4,7 @@
 
 #include <Logger.h>
 #include <AST/AstIdentifier.h>
+#include <Context.h>
 #include <Utils.h>
 #include <Variables/Variable.h>
 
@@ -15,7 +16,7 @@ long AstIdentifier::Evaluate()
 
 std::string AstIdentifier::Compile(ContextMap &offsets)
 {
-    return Utils::MoveToRax((*offsets)[name]->GetAssemblyAlias());
+    return Utils::MoveToRax((offsets.GetOffsets())->at(name)->GetAssemblyAlias());
 }
 
 std::string AstIdentifier::Dump()
@@ -26,5 +27,5 @@ std::string AstIdentifier::Dump()
 
 VariableType AstIdentifier::UnderlyingType()
 {
-    return context->at(name)->GetType();
+    return (context)->at(name)->GetType();
 }

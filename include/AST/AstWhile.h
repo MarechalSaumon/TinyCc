@@ -4,7 +4,7 @@
 
 #ifndef ASTWHILE_H
 #define ASTWHILE_H
-#include "Ast.h"
+#include <AST/Ast.h>
 
 class AstWhile : public Ast
 {

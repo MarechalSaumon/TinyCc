@@ -20,7 +20,7 @@ inline std::string LoggingLevelToString(LoggingLevel level)
         case INFO: return "INFO";
         case WARNING: return "WARNING";
         case ERROR: return "ERROR";
-        case CRITICAL: return "CRITICAL";
+        case CRITICAL: return "FATAL";
         default: return "UNKNOWN";
     }
 }

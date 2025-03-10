@@ -2,46 +2,45 @@
 // Created by saumonbro on 2/21/25.
 //
 
+#include <Context.h>
 #include <Function.h>
 #include <iostream>
 #include <Utils.h>
 #include <list>
 #include <utility>
 #include <AST/AstReference.h>
-#include <AST/AstReturn.h>
-
-long Function::Call(
-    std::unordered_map<std::string, std::unique_ptr<AstLiteral>> context)
-{
-    (void)context;
-    return 0;
-}
+#include <Variables/Variable.h>
 
 Function::Function(std::string name, const std::vector<std::string> &args,
-                   ContextMap context, bool isStatic, VariableType returnType)
+                   std::shared_ptr<std::map<std::string, std::shared_ptr<Variable> > > context,
+                   std::shared_ptr<Context> global_context, bool isStatic, VariableType returnType)
     : m_name(std::move(name))
-    , m_args(args)
-    , m_isStatic(isStatic)
-    , m_context(std::move(context))
-    , m_returnType(returnType)
-{}
+      , m_args(args)
+      , m_isStatic(isStatic)
+      , m_context(std::move(context))
+      , m_returnType(std::move(returnType))
+      , global_context(std::move(global_context))
+{
+}
 
 // Args not in offset
 std::string Function::Compile()
 {
-    static const std::vector<std::string> args_reg = { "%rdi", "%rsi", "%rdx",
-                                                   "%rcx", "%r8",  "%r9" };
+    static const std::vector<std::string> args_reg = {
+        "%rdi", "%rsi", "%rdx",
+        "%rcx", "%r8", "%r9"
+    };
     std::unordered_map<std::string, int> offsets;
     int offset = 1;
-    for (const auto &s : *m_context)
+    for (const auto &[identifier, variable]: *m_context)
     {
-        offsets[s.first] = offset * 8;
-        s.second->SetOffset(offset * 8);
+        offsets[identifier] = offset * 8;
+        variable->SetOffset(offset * 8);
         offset++;
     }
 
     // compute offsets for each argument
-    for (const auto &arg : m_args)
+    for (const auto &arg: m_args)
     {
         if (!m_context->contains(arg))
         {
@@ -61,7 +60,9 @@ std::string Function::Compile()
         res += Utils::MoveRegisterToStack(args_reg[i], offsets[m_args[i]]);
     }
 
-    res += m_body->Compile(m_context);
+    Context context{};
+    context.SetOffsets(m_context);
+    res += m_body->Compile(context);
 
     res += "\n";
 
@@ -69,7 +70,7 @@ std::string Function::Compile()
     return res;
 }
 
-std::string Function::Dump()
+std::string Function::Dump() const
 {
     std::string res;
     res += m_name + ":\n\n";
@@ -78,9 +79,9 @@ std::string Function::Dump()
     return res;
 }
 
-std::string Function::GetPrototype()
+std::string Function::GetPrototype() const
 {
-    std::string res = (m_isStatic ? "static " : "") +  m_name + "(";
+    std::string res = (m_isStatic ? "static " : "") + m_name + "(";
 
     for (size_t i = 0; i < m_args.size(); i++)
     {
@@ -105,8 +106,16 @@ void Function::Optimize()
     m_body = std::move(cur);
 }
 
-
-bool Function::Returns()
+bool Function::Returns() const
 {
+    if (m_returnType == VOID)
+    {
+        return !m_body->Returns();
+    }
     return m_body->Returns();
+}
+
+void Function::AddVariable(const std::string &name, std::shared_ptr<Variable> variable) const
+{
+    (*m_context)[name] = std::move(variable);
 }

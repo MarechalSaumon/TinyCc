@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.16.3)
 project(TinyCc)
 
+#set(CMAKE_CPP_COMPILER clang++)
 add_compile_options(-Wall -Wextra -Werror -pedantic -fsanitize=address -g -Wold-style-cast)
 add_link_options(-fsanitize=address -g)
 

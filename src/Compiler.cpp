@@ -32,7 +32,7 @@ Compiler::Compiler(const std::string &path)
 
     if (!m_program->Returns())
     {
-        Logger::Log("Some functions do not return a value on all execution path.", ERROR);
+        Logger::Log("Some functions do not comply to their specified return type (Either a procedure attempted to return a value, or a function does not return a value on all execution path).", ERROR);
         throw std::runtime_error("");
     }
 

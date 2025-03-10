@@ -5,13 +5,12 @@
 #ifndef AST_H
 #define AST_H
 #include <Enum.h>
-#include <iostream>
 #include <Logger.h>
-#include <map>
 #include <memory>
 #include <string>
-
 class Variable;
+class Context;
+using ContextMap = Context;
 
 enum ValueType
 {
@@ -20,9 +19,7 @@ enum ValueType
 };
 
 class Ast;
-
-using ContextMap =
-    std::shared_ptr<std::map<std::string, std::unique_ptr<Variable>>>;
+//std::shared_ptr<std::map<std::string, std::unique_ptr<Variable>>>;
 
 class Ast
 {

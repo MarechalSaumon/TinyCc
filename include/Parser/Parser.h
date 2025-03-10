@@ -10,15 +10,20 @@
 #include <Program.h>
 #include <Variables/Variable.h>
 #include <map>
+#include <Class.h>
 
 class Parser
 {
 public:
     explicit Parser(std::istream &input);
 
+    std::vector<std::string> ParseParameters();
+
     std::unique_ptr<Ast> FunctionCall(const std::string &func_name);
 
     std::unique_ptr<Ast> Factor();
+
+    std::unique_ptr<Ast> Dot();
 
     std::unique_ptr<Ast> Pow();
 
@@ -44,7 +49,16 @@ public:
 
     std::unique_ptr<Ast> Base(const std::string &func);
 
-    std::shared_ptr<Function> ParseFunction();
+    std::vector<std::string> WriteParametersInContext();
+
+    template<class T>
+    std::shared_ptr<T> ParseFunction();
+
+    bool IsPublic();
+
+    void ParseFields(std::vector<Attribute> &attributes);
+
+    std::unique_ptr<Class> ParseClass();
 
     std::unique_ptr<Program> Parse();
 
@@ -66,10 +80,10 @@ private:
     Lexer m_lexer;
 
     std::unordered_map<std::string, std::shared_ptr<Function>> m_functions;
-    ContextMap m_context;
+    std::shared_ptr<std::map<std::string, std::shared_ptr<Variable>>> m_context;
     int m_offset;
-
     std::vector<std::pair<std::string, std::string>> rodata_;
+    std::shared_ptr<Context> global_context_;
 };
 
 #endif // PARSER_H

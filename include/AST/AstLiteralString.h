@@ -5,7 +5,7 @@
 #ifndef ASTLITERALSTRING_H
 #define ASTLITERALSTRING_H
 
-#include "Ast.h"
+#include <AST/Ast.h>
 
 class AstLiteralString : public Ast {
 public:

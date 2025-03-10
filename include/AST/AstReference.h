@@ -8,7 +8,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "Ast.h"
+#include <AST/Ast.h>
 
 class AstReference final : public Ast
 {

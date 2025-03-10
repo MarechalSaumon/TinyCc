@@ -39,18 +39,6 @@ unsigned long levenshtein_aux(const std::string& s1, const std::string& s2, unsi
     return min(del, ins, sub) + 1;
 }
 
-class bold {
-    std::string_view const &s;
-public:
-    bold(std::string_view const &s) : s(s) {}
-
-    friend std::ostream &operator<<(std::ostream &os, bold const &b) {
-        os << "\x1b[1m" << b.s << "\x1b[0m";
-        return os;
-    }
-};
-
-
 std::string bold_on()
 {
     std::stringstream os;
@@ -116,7 +104,7 @@ std::string GetErrorMessage(const Token& token, std::vector<TokenType> expected)
         }
     }
 
-    if (expected[0] == TOKEN_STRING_TYPE || expected[0] == TOKEN_INT_TYPE)
+    if (expected[0] == TOKEN_TYPE)
     {
         return GetTypeErrorMessage(token);
     }

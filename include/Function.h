@@ -4,39 +4,39 @@
 
 #ifndef ASTFUNCTION_H
 #define ASTFUNCTION_H
-#include <AST/Ast.h>
-#include <AST/AstBlock.h>
-#include <AST/AstLiteral.h>
-#include <Variables/Variable.h>
 #include <map>
+#include <vector>
+#include <AST/Ast.h>
 
 class Function
 {
 public:
-    long
-    Call(std::unordered_map<std::string, std::unique_ptr<AstLiteral>> context);
+    virtual ~Function() = default;
 
     explicit Function(std::string name, const std::vector<std::string> &args,
-                      ContextMap context, bool isStatic = false, VariableType returnType = INTEGER);
+                      std::shared_ptr<std::map<std::string, std::shared_ptr<Variable>>> context, std::shared_ptr<Context> global_context, bool isStatic = false, VariableType returnType = INTEGER);
+
 
     [[nodiscard]] std::string Compile();
-    std::string Dump();
+    [[nodiscard]] std::string Dump() const;
 
-    std::string GetPrototype();
+    [[nodiscard]] std::string virtual GetPrototype() const;
 
     void Optimize();
 
-    bool Returns();
+    [[nodiscard]] bool Returns() const;
 
     std::string GetName()
     {
         return m_name;
     }
 
-    [[nodiscard]] unsigned long GetArgc() const
+    [[nodiscard]] unsigned long virtual GetArgc() const
     {
         return static_cast<unsigned long>(m_args.size());
     }
+
+    void AddVariable(const std::string& name, std::shared_ptr<Variable> variable) const;
 
     void SetBody(std::unique_ptr<Ast> body)
     {
@@ -48,7 +48,7 @@ public:
         return m_isStatic;
     }
 
-    VariableType GetReturnType() const
+    [[nodiscard]] VariableType GetReturnType() const
     {
         return m_returnType;
     }
@@ -58,8 +58,9 @@ private:
     std::unique_ptr<Ast> m_body;
     std::vector<std::string> m_args;
     bool m_isStatic;
-    ContextMap m_context;
+    std::shared_ptr<std::map<std::string, std::shared_ptr<Variable>>> m_context;
     VariableType m_returnType;
+    std::shared_ptr<Context> global_context;
 };
 
 #endif // ASTFUNCTION_H

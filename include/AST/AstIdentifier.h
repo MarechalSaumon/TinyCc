@@ -7,26 +7,29 @@
 #include <map>
 #include <memory>
 #include <string>
-#include <unordered_map>
 
-#include "Ast.h"
+#include <AST/Ast.h>
 
 class AstIdentifier final : public Ast
 {
 public:
 
     long Evaluate() override;
-    explicit AstIdentifier(std::string value, ContextMap ctxt)
+    explicit AstIdentifier(std::string value,  std::shared_ptr<std::map<std::string, std::shared_ptr<Variable>>>  ctxt)
         : name(std::move(value))
         , context(std::move(ctxt))
     {}
     std::string Compile(ContextMap &offsets) override;
     std::string Dump() override;
     VariableType UnderlyingType() override;
+    std::string GetName() const
+    {
+        return name;
+    }
 
 private:
     std::string name;
-    ContextMap context;
+     std::shared_ptr<std::map<std::string, std::shared_ptr<Variable>>> context;
 };
 
 #endif // ASTIDENTIFIER_H

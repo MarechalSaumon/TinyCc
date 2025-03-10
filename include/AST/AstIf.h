@@ -4,7 +4,7 @@
 
 #ifndef ASTIF_H
 #define ASTIF_H
-#include "Ast.h"
+#include <AST/Ast.h>
 
 class AstIf : public Ast
 {

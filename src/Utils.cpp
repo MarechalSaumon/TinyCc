@@ -57,7 +57,7 @@ std::string Utils::MoveRegisterToStack(const std::string &reg, int offset)
         + StackPtr() + ")\n";
 }
 
-std::string Utils::MoveRegisterToRegister(const std::string &reg1,
+std::string Utils::MoveWhateverToWhatever(const std::string &reg1,
                                           const std::string &reg2)
 {
     return std::string("mov ") + reg1 + ", " + reg2 + "\n";
@@ -105,9 +105,23 @@ std::string Utils::MoveLiteralToRax(long value)
     return std::string("mov $") + std::to_string(value) + ", %rax\n";
 }
 
+std::string Utils::MoveLiteralToRegister(const std::string& value, const std::string& reg)
+{
+    return std::string("mov $") + value + ", "+reg+"\n";
+}
+
 std::string Utils::MoveLiteralToRax(const std::string& value)
 {
     return std::string("mov $") + value + ", %rax\n";
+}
+
+unsigned long Align(unsigned long size)
+{
+    if (size % 16 != 0)
+    {
+        size += 8;
+    }
+    return size;
 }
 
 std::string
@@ -116,7 +130,8 @@ Utils::BuildPrologue(const std::unordered_map<std::string, int> &offsets)
     std::string res;
     res += "push %rbp\n";
     res += "movq %rsp, %rbp\n";
-    res += "sub $" + std::to_string((offsets.size()) * 8) + ", %rsp\n\n";
+    unsigned long align = Align(offsets.size() * 8);
+    res += "sub $" + std::to_string(align) + ", %rsp\n\n";
     return res;
 }
 
@@ -130,7 +145,9 @@ Utils::BuildEpilogue(const std::string &func,
     {
         res += "call clear\n";
     }
-    res += "add $" + std::to_string((offsets.size()) * 8) + ", %rsp\n";
+    unsigned long align = Align(offsets.size() * 8);
+
+    res += "add $" + std::to_string(align) + ", %rsp\n";
     res += "pop %rbp\n";
     res += "ret\n\n\n";
     return res;

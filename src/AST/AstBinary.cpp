@@ -2,6 +2,7 @@
 // Created by saumonbro on 2/19/25.
 //
 
+#include <Context.h>
 #include <AST/AstBinary.h>
 #include <AST/AstLiteral.h>
 #include <Utils.h>
@@ -10,6 +11,8 @@
 #include <iostream>
 #include <Logger.h>
 #include <ostream>
+#include <Class.h>
+#include <AST/AstIdentifier.h>
 
 long AstBinary::Evaluate()
 {
@@ -135,6 +138,26 @@ std::string AstBinary::CompileWithString(ContextMap& offsets)
 // Result is stored in rbx, then moved to rax at the end of the function
 std::string AstBinary::Compile(ContextMap &offsets)
 {
+    if (op == TOKEN_DOT) // What do i do ?
+    {
+        // Get left type, and attempt to return the element designated by right (right must be an identifier)
+        if (const auto *id = dynamic_cast<const AstIdentifier *>(m_right.get()); id)
+        {
+            const Class& c = offsets.GetClasse(id->GetName());
+            auto var = c.GetAttribute(id->GetName());
+            if (std::holds_alternative<Attribute>(var))
+            {
+                // Suppose address of class is in %rax
+                return std::string{"mov "} + c.GetAssemblyName(std::get<Attribute>(var).name, "%rax") +   ", %rax";
+            }
+        }
+        else
+        {
+            throw std::invalid_argument("Invalid operation ");
+        }
+
+    }
+
 
     if (m_left->UnderlyingType() == STRING || m_right->UnderlyingType() == STRING)
     {
@@ -231,7 +254,7 @@ VariableType AstBinary::UnderlyingType()
 {
     if (m_left->UnderlyingType() == STRING || m_right->UnderlyingType() == STRING)
     {
-        return VariableType::STRING;
+        return STRING;
     }
     return INTEGER;
 }

@@ -4,9 +4,8 @@
 
 #ifndef ASTLITERAL_H
 #define ASTLITERAL_H
-#include <variant>
 
-#include "Ast.h"
+#include <AST/Ast.h>
 
 class AstLiteral final : public Ast
 {
